@@ -456,6 +456,7 @@ const permissionGroups = [
         items: [
             { key: 'kategori_konten', label: 'Kategori Konten' },
             { key: 'berita_artikel', label: 'Berita & Artikel' },
+            { key: 'pengumuman_paroki', label: 'Pengumuman Paroki' },
             { key: 'agenda_kegiatan', label: 'Agenda Kegiatan' },
             { key: 'galeri_album', label: 'Galeri Album' },
             { key: 'sambutan_pastor', label: 'Sambutan Pastor' },

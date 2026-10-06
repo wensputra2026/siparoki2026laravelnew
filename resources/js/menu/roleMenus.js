@@ -555,7 +555,6 @@ export const roleMenus = {
         },
     ],
     'Penulis': [
-
         {
             section: 'Dashboard',
             menus: [
@@ -568,8 +567,6 @@ export const roleMenus = {
             menus: [
                 { name: 'Kategori Konten', href: '/penulis/kategori-konten', icon: 'fa-folder-open' },
                 { name: 'Berita & Artikel', href: '/penulis/konten', icon: 'fa-newspaper' },
-                { name: 'Pengumuman Paroki', href: '/penulis/pengumuman', icon: 'fa-bullhorn' },
-                { name: 'Sambutan Pastor', href: '/penulis/sambutan-pastor', icon: 'fa-quote-right' },
             ],
         },
         {

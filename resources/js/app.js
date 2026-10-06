@@ -29,9 +29,9 @@ if (appElement && appElement.dataset.page) {
         },
         progress: {
             delay: 100,
-            color: '#f59e0b',
+            color: '#10b981',
             includeCSS: true,
-            showSpinner: true,
+            showSpinner: false,
         },
     });
 }

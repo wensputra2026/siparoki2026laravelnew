@@ -317,17 +317,7 @@ const closeAllGroups = () => {
     });
 };
 
-const isDashboardPage = () => {
-    const current = _page.url.split('?')[0].replace(/\/$/, '') || '/';
-    return current === rolePrefix.value;
-};
-
 const syncActiveGroup = () => {
-    if (isDashboardPage()) {
-        closeAllGroups();
-        return;
-    }
-
     let activeGroupName = null;
     currentMenuTree.value.forEach((section) => {
         section.menus.forEach((menu) => {
@@ -337,9 +327,9 @@ const syncActiveGroup = () => {
         });
     });
 
-    Object.keys(openGroups.value).forEach((key) => {
-        openGroups.value[key] = (key === activeGroupName);
-    });
+    if (activeGroupName) {
+        openGroups.value[activeGroupName] = true;
+    }
 };
 
 const toggleGroup = (groupName) => {

@@ -1,10 +1,11 @@
 <script setup>
-import { provide } from 'vue';
+import { provide, ref } from 'vue';
 import { useRoleMenu, RoleMenuKey } from '../composables/useRoleMenu.js';
 import AppTopbar from '../Components/AppTopbar.vue';
 import AppSidebar from '../Components/AppSidebar.vue';
 import AppToast from '../Components/AppToast.vue';
 import AppLogoutModal from '../Components/AppLogoutModal.vue';
+import TukarPenggunaModal from '../Components/TukarPenggunaModal.vue';
 
 const props = defineProps({
     title: {
@@ -25,8 +26,10 @@ const props = defineProps({
     },
 });
 
+const showTukarPengguna = ref(false);
+
 const menu = useRoleMenu(props);
-provide(RoleMenuKey, menu);
+provide(RoleMenuKey, { ...menu, showTukarPengguna });
 
 // Destructure ke top-level agar ref ter-auto-unwrap di template.
 // (Akses via `menu.xxx` tidak di-unwrap karena menu adalah plain object.)
@@ -40,6 +43,7 @@ const {
     page,
     activeRole,
     leaveImpersonation,
+    isSuperAdmin,
 } = menu;
 </script>
 
@@ -56,7 +60,7 @@ const {
         >
             <div class="flex items-center gap-2 truncate">
                 <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-white/20 text-[11px] shrink-0">
-                    <i class="fa-solid fa-user-gear"></i>
+                    <i class="bi bi-person-gear"></i>
                 </span>
                 <span class="truncate">
                     Mode Simulasi Akun: Anda sedang masuk sebagai <strong class="text-amber-100 underline decoration-amber-300 underline-offset-2">{{ page.props.auth?.user?.name }}</strong> 
@@ -68,7 +72,7 @@ const {
                 @click="leaveImpersonation"
                 class="ml-3 shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white text-amber-900 hover:bg-amber-50 font-bold text-[11px] shadow-sm transition cursor-pointer"
             >
-                <i class="fa-solid fa-arrow-right-from-bracket text-[10px]"></i>
+                <i class="bi bi-box-arrow-right text-[10px]"></i>
                 <span>Kembali ke Super Admin</span>
             </button>
         </div>
@@ -89,6 +93,13 @@ const {
             @cancel="showLogoutModal = false"
         />
 
+        <!-- TUKAR PENGGUNA MODAL (Impersonasi) -->
+        <TukarPenggunaModal
+            v-if="isSuperAdmin"
+            :show="showTukarPengguna"
+            @close="showTukarPengguna = false"
+        />
+
         <!-- Body Area: Fixed Sidebar + Scrollable Content -->
         <div class="flex-1 flex overflow-hidden">
             <!-- 2. SIDEBAR (DESKTOP + MOBILE DRAWER) -->
@@ -103,14 +114,17 @@ const {
                     </div>
                 </main>
 
-                <!-- 4. FIXED BACKEND FOOTER -->
-                <footer class="h-10 w-full shrink-0 border-t border-slate-200/80 bg-white px-4 sm:px-6 flex items-center justify-between text-xs text-slate-500 z-20">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        <span>{{ page.props.app?.name || 'SIPAROKI' }} &copy; {{ new Date().getFullYear() }} {{ page.props.app?.nama_paroki || 'Paroki St. Vincentius a Paulo' }}</span>
+                <!-- 4. FIXED BACKEND FOOTER (Exact BIMKAT Spec) -->
+                <footer class="h-11 w-full shrink-0 border-t border-slate-200/80 bg-white/95 backdrop-blur-sm px-4 sm:px-8 flex items-center justify-between text-[11px] sm:text-xs text-slate-500 z-20 select-none">
+                    <div class="flex items-center gap-2 font-medium">
+                        <span>&copy; {{ new Date().getFullYear() }} {{ page.props.app?.name || 'SIPAROKI' }} &bull; {{ page.props.app?.nama_paroki || 'St. Vinsensius a Paulo - Benlutu' }}. All rights reserved.</span>
                     </div>
-                    <div class="hidden sm:flex items-center gap-4 text-[11px]">
-                        <span class="font-medium text-slate-600">Peran Aktif: <b class="text-amber-800">{{ activeRole }}</b></span>
+                    <div class="flex items-center gap-3">
+                        <span class="hidden sm:inline text-slate-400 text-[11px]">Peran Aktif: <b class="text-emerald-800 font-semibold">{{ activeRole }}</b></span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>Sistem Aktif</span>
+                        </span>
                     </div>
                 </footer>
             </div>

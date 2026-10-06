@@ -21,10 +21,9 @@ composer install --no-dev --optimize-autoloader
 echo "[+] Memastikan APP_KEY terpasang..."
 php artisan key:generate --force
 
-# 4. Migrasi & Seeder
-echo "[+] Menjalankan migrasi & seeder database bersih..."
-php artisan migrate --force
-php artisan db:seed --force
+# 4. Setup otomatis database, migrasi, dan master data
+echo "[+] Menjalankan instalasi database SIPAROKI..."
+php artisan siparoki:setup --force
 
 # 5. Storage Symlink
 echo "[+] Membuat tautan storage..."

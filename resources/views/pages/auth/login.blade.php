@@ -9,36 +9,16 @@
     @else
         <link rel="icon" type="image/jpeg" href="/assets/uploads/profil/logo_paroki_1787370466.jpeg">
     @endif
-    <!-- Local Offline Poppins Fonts & FontAwesome -->
-    <link rel="preload" href="/fonts/poppins/poppins-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/poppins/poppins-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/poppins/poppins-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+    <!-- Google Fonts: Inter (BIMKAT Spec) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Bootstrap Icons (BIMKAT Spec) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        @font-face {
-            font-family: 'Poppins';
-            font-style: normal;
-            font-weight: 400;
-            font-display: swap;
-            src: url('/fonts/poppins/poppins-latin-400-normal.woff2') format('woff2');
-        }
-        @font-face {
-            font-family: 'Poppins';
-            font-style: normal;
-            font-weight: 600;
-            font-display: swap;
-            src: url('/fonts/poppins/poppins-latin-600-normal.woff2') format('woff2');
-        }
-        @font-face {
-            font-family: 'Poppins';
-            font-style: normal;
-            font-weight: 700;
-            font-display: swap;
-            src: url('/fonts/poppins/poppins-latin-700-normal.woff2') format('woff2');
-        }
-        body, html {
-            font-family: 'Poppins', sans-serif;
-        }
+        body, html { font-family: 'Inter', sans-serif; }
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -47,7 +27,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
                         primary: '#0c4a6e',

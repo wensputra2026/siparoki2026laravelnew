@@ -1,0 +1,118 @@
+/* Custom Tailwind Theme for Tom Select v2.3.1 */
+.ts-wrapper {
+    width: 100% !important;
+    font-family: inherit !important;
+}
+
+.ts-control {
+    min-height: 42px !important;
+    padding: 0.5rem 0.875rem !important;
+    border-radius: 0.75rem !important;
+    border: 1px solid #cbd5e1 !important;
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.15s ease-in-out !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 0.25rem !important;
+}
+
+.dark .ts-control {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+.ts-wrapper.focus .ts-control,
+.ts-control:focus {
+    border-color: #f59e0b !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25) !important;
+}
+
+.ts-control input {
+    font-size: 0.875rem !important;
+    color: inherit !important;
+}
+
+.ts-dropdown {
+    border-radius: 0.75rem !important;
+    border: 1px solid #e2e8f0 !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08) !important;
+    margin-top: 4px !important;
+    padding: 0.35rem !important;
+    z-index: 1050 !important;
+}
+
+.dark .ts-dropdown {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    color: #f1f5f9 !important;
+}
+
+.ts-dropdown .option {
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 0.5rem !important;
+    font-size: 0.875rem !important;
+    color: #334155 !important;
+    cursor: pointer !important;
+    transition: background-color 0.1s ease !important;
+}
+
+.dark .ts-dropdown .option {
+    color: #cbd5e1 !important;
+}
+
+.ts-dropdown .option:hover,
+.ts-dropdown .active {
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
+}
+
+.dark .ts-dropdown .option:hover,
+.dark .ts-dropdown .active {
+    background-color: #78350f !important;
+    color: #fef3c7 !important;
+}
+
+.ts-dropdown .option.selected {
+    background-color: #f59e0b !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+.ts-control .item {
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
+    border-radius: 0.5rem !important;
+    padding: 0.2rem 0.6rem !important;
+    font-weight: 500 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+    border: 1px solid #fde68a !important;
+}
+
+.dark .ts-control .item {
+    background-color: #78350f !important;
+    color: #fef3c7 !important;
+    border-color: #92400e !important;
+}
+
+.ts-control .item .remove {
+    margin-left: 0.25rem !important;
+    color: #b45309 !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+}
+
+.ts-wrapper.disabled .ts-control {
+    opacity: 0.6 !important;
+    background-color: #f1f5f9 !important;
+    cursor: not-allowed !important;
+}

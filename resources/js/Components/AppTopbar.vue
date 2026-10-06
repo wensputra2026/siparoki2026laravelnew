@@ -37,6 +37,37 @@ const {
 
 const isUserMenuOpen = ref(false);
 
+// Realtime Clock & Screen Zoom Control (BIMKAT Spec)
+const currentClock = ref('');
+const currentZoom = ref(100);
+let clockTimer = null;
+
+const updateClock = () => {
+    const now = new Date();
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    const day = days[now.getDay()];
+    const date = now.getDate();
+    const month = months[now.getMonth()];
+    const year = now.getFullYear();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    currentClock.value = `${day}, ${date} ${month} ${year} | ${h}:${m}:${s}`;
+};
+
+const changeZoom = (delta) => {
+    currentZoom.value = Math.max(70, Math.min(130, currentZoom.value + delta));
+    document.body.style.zoom = currentZoom.value + '%';
+    localStorage.setItem('user_zoom', currentZoom.value);
+};
+
+const resetZoom = () => {
+    currentZoom.value = 100;
+    document.body.style.zoom = '100%';
+    localStorage.setItem('user_zoom', 100);
+};
+
 // Induk Wilayah & Stasi untuk simulasi Admin KUB
 const selectedKubParentId = ref(''); // e.g. 'w_17' or 'k_1'
 
@@ -110,7 +141,6 @@ const onKubParentChange = (val) => {
         } else if (type === 'k') {
             onScopeChange('kapela_id', rawId);
         }
-        // Jika KUB saat ini tidak cocok dengan parent yang baru dipilih, kosongkan KUB
         const currentKub = (kubList?.value || []).find(k => String(k.id) === String(selectedKubId?.value));
         if (currentKub) {
             const matches = (type === 'w' && String(currentKub.wilayah_id) === String(rawId))
@@ -134,69 +164,97 @@ const closeUserMenu = (e) => {
 };
 
 onMounted(() => {
+    updateClock();
+    clockTimer = setInterval(updateClock, 1000);
+    const saved = localStorage.getItem('user_zoom');
+    if (saved) {
+        const parsedZoom = parseInt(saved);
+        if (!isNaN(parsedZoom) && parsedZoom !== 100) {
+            currentZoom.value = parsedZoom;
+            if (document.body.style.zoom !== parsedZoom + '%') {
+                document.body.style.zoom = parsedZoom + '%';
+            }
+        }
+    }
     document.addEventListener('click', closeUserMenu);
 });
 
 onUnmounted(() => {
+    if (clockTimer) clearInterval(clockTimer);
     document.removeEventListener('click', closeUserMenu);
 });
 </script>
 
-
 <template>
-    <!-- 1. FIXED TOPBAR / HEADER (FULLY RESPONSIVE) -->
-    <header class="h-16 w-full shrink-0 border-b border-slate-200/80 bg-white/95 backdrop-blur-md z-30 shadow-xs flex items-center justify-between px-2.5 sm:px-4 md:px-6 gap-2">
-        <!-- Left: Toggle & Brand (Never Squished) -->
-        <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+    <!-- 1. FIXED TOPBAR / HEADER (Exact BIMKAT Specification) -->
+    <header class="h-16 w-full shrink-0 border-b border-slate-200/80 bg-white/95 backdrop-blur-md z-30 shadow-xs flex items-center justify-between px-3 sm:px-6 gap-3 select-none">
+        
+        <!-- Left: Push-Menu Toggle Button & Current Page Title -->
+        <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0 shrink-0">
             <!-- Sidebar toggle desktop -->
             <button
                 @click="toggleSidebar"
                 type="button"
-                class="hidden lg:flex items-center justify-center w-8.5 h-8.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer shrink-0 border border-slate-200/70"
-                title="Toggle Sidebar"
+                class="hidden lg:flex items-center justify-center w-9 h-9 rounded-xl text-slate-600 hover:text-emerald-700 hover:bg-slate-100 transition-colors cursor-pointer shrink-0 border border-slate-200/80"
+                title="Toggle Push Menu (Sidebar)"
             >
-                <i class="fa-solid fa-bars text-sm"></i>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
             </button>
 
             <!-- Sidebar toggle mobile -->
             <button
                 @click="isMobileOpen = !isMobileOpen"
                 type="button"
-                class="lg:hidden flex items-center justify-center w-8.5 h-8.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer shrink-0 border border-slate-200/70"
+                class="lg:hidden flex items-center justify-center w-9 h-9 rounded-xl text-slate-600 hover:text-emerald-700 hover:bg-slate-100 transition-colors cursor-pointer shrink-0 border border-slate-200/80"
                 title="Buka Menu"
             >
-                <i class="fa-solid fa-bars text-sm"></i>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
             </button>
 
-            <!-- Logo & Title -->
-            <div class="flex items-center gap-2 shrink-0">
-                <div class="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-xl bg-amber-500/10 p-0.5 border border-amber-400/40 shrink-0 overflow-hidden flex items-center justify-center">
-                    <img
-                        :src="page.props.app?.logo || '/images/church-logo.png'"
-                        :alt="page.props.app?.nama_paroki || 'Logo'"
-                        class="w-full h-full object-cover rounded-lg"
-                        @error="(e) => { e.target.onerror = null; e.target.src = '/images/church-logo.png'; }"
-                    />
-                </div>
-                <div class="min-w-0">
-                    <h1 class="font-black text-xs sm:text-sm md:text-base tracking-tight text-slate-900 leading-none">
-                        SIPAROKI
-                    </h1>
-                    <p class="text-[10px] text-slate-500 hidden 2xl:block mt-0.5 truncate max-w-[200px]">
-                        {{ page.props.app?.nama_paroki || title }}
-                    </p>
-                </div>
-            </div>
+            <!-- Page Title -->
+            <h1 class="text-base sm:text-lg font-bold text-slate-800 tracking-tight truncate max-w-[200px] xs:max-w-[260px] sm:max-w-[400px]">
+                {{ title }}
+            </h1>
         </div>
 
-        <!-- Right: Role Switcher, Chat, Notif & User Actions -->
-        <div class="flex items-center gap-1 sm:gap-1.5 md:gap-2 shrink-0 justify-end">
-            <!-- Role Switcher (for Super Admin) -->
-            <div v-if="isSuperAdmin" class="flex items-center gap-1 bg-slate-100/90 p-0.5 sm:p-1 rounded-xl border border-slate-200 text-xs shrink-0">
+        <!-- Right: Realtime Clock, Zoom Widget, Website Link, Role Controls, User Dropdown -->
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0 justify-end">
+
+            <!-- Real-time Digital Clock Pill (BIMKAT Spec) -->
+            <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100/90 border border-slate-200/80 text-xs font-semibold text-slate-700">
+                <i class="bi bi-clock-history text-emerald-600 text-xs"></i>
+                <span class="font-medium tracking-tight">{{ currentClock }}</span>
+            </div>
+
+            <!-- Screen Zoom Control Widget (BIMKAT Spec) -->
+            <div class="hidden xl:flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-medium text-slate-600">
+                <span class="font-bold text-slate-800 text-[11px] min-w-[32px]">{{ currentZoom }}%</span>
+                <button @click="changeZoom(-5)" class="w-5 h-5 rounded hover:bg-slate-200 flex items-center justify-center font-bold cursor-pointer" title="Perkecil Tampilan">-</button>
+                <button @click="changeZoom(5)" class="w-5 h-5 rounded hover:bg-slate-200 flex items-center justify-center font-bold cursor-pointer" title="Perbesar Tampilan">+</button>
+                <button @click="resetZoom()" class="px-1.5 py-0.5 rounded text-[10px] font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-200 cursor-pointer">Reset</button>
+            </div>
+
+            <!-- Quick Link: Lihat Website (BIMKAT Spec) -->
+            <a
+                href="/"
+                target="_blank"
+                class="hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-emerald-700 bg-slate-100 hover:bg-emerald-50 border border-slate-200/70 transition-all cursor-pointer"
+                title="Buka Website Publik Paroki"
+            >
+                <i class="bi bi-box-arrow-up-right text-emerald-600 text-xs"></i>
+                <span>Lihat Website</span>
+            </a>
+
+            <!-- Role Switcher & Scoping Selectors (Preserved for Super Admin Simulation) -->
+            <div v-if="isSuperAdmin" class="flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200 text-xs shrink-0">
                 <select
                     v-model="activeRole"
                     @change="onRoleChange"
-                    class="bg-white border border-slate-200 rounded-lg px-1 sm:px-2 py-1 text-[11px] sm:text-xs font-bold text-amber-800 focus:outline-none focus:border-amber-500 cursor-pointer shadow-2xs w-auto max-w-[80px] xs:max-w-[100px] sm:max-w-[125px] md:max-w-[140px] truncate"
+                    class="bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold text-emerald-800 focus:outline-none focus:border-emerald-500 cursor-pointer shadow-2xs max-w-[130px] truncate"
                     title="Ganti Peran Aktif (Simulasi Hak Akses)"
                 >
                     <option v-for="r in Object.keys(roleMenus)" :key="r" :value="r">
@@ -255,9 +313,8 @@ onUnmounted(() => {
                     </div>
                 </template>
 
-                <!-- Dynamic KUB Selector: Pilih Wilayah / Stasi Terlebih Dahulu, kemudian Pilih KUB -->
+                <!-- Dynamic KUB Selector -->
                 <template v-if="(activeRole === 'Admin KUB' || activeRole === 'Ketua KUB') && (kubParentOptions.length > 0 || kubList.length > 0)">
-                    <!-- 1. Dropdown Induk: Wilayah / Stasi -->
                     <div class="hidden xl:block w-40 2xl:w-48">
                         <SearchableSelect
                             v-model="selectedKubParentId"
@@ -271,8 +328,6 @@ onUnmounted(() => {
                             @change="onKubParentChange"
                         />
                     </div>
-
-                    <!-- 2. Dropdown KUB: Hanya KUB di bawah Wilayah / Stasi yang dipilih -->
                     <div class="hidden xl:block w-44 2xl:w-56">
                         <SearchableSelect
                             v-model="selectedKubId"
@@ -289,32 +344,31 @@ onUnmounted(() => {
                     </div>
                 </template>
 
-
                 <!-- Quick Button: Return To Super Admin -->
                 <button
                     v-if="activeRole !== 'Super Admin'"
                     type="button"
                     @click="returnToSuperAdmin"
-                    class="inline-flex items-center justify-center gap-1 px-1.5 sm:px-2 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-[10px] sm:text-[11px] font-bold shadow-xs transition cursor-pointer shrink-0"
+                    class="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white text-[11px] font-bold shadow-xs transition cursor-pointer shrink-0"
                     title="Kembali ke Mode Penuh Super Admin"
                 >
-                    <i class="fa-solid fa-arrow-rotate-left text-[9px]"></i>
+                    <i class="bi bi-arrow-counterclockwise text-xs"></i>
                     <span class="hidden 2xl:inline">Ke Super Admin</span>
                 </button>
             </div>
 
             <!-- Static Role Badge for Non-Super Admin -->
-            <div v-else class="hidden sm:flex items-center gap-1 px-2 py-1 rounded-xl bg-amber-50 border border-amber-200/80 text-[11px] sm:text-xs font-bold text-amber-900 shadow-2xs shrink-0">
-                <i class="fa-solid fa-user-shield text-amber-600 text-[10px]"></i>
-                <span class="truncate max-w-[100px] sm:max-w-[120px]">{{ activeRole }}</span>
+            <div v-else class="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200/80 text-xs font-bold text-emerald-900 shadow-2xs shrink-0">
+                <i class="bi bi-shield-check text-emerald-600 text-xs"></i>
+                <span class="truncate max-w-[120px]">{{ activeRole }}</span>
             </div>
 
-            <!-- Panduan RBAC (Ultrawide Desktop only) -->
+            <!-- Panduan RBAC Pill -->
             <Link
                 :href="getHref('/panduan-hak-akses')"
-                class="hidden 2xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold hover:bg-amber-100 transition shrink-0"
+                class="hidden 2xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 text-xs font-bold shadow-2xs hover:bg-amber-100 transition cursor-pointer shrink-0"
             >
-                <i class="fa-solid fa-shield-halved text-amber-600"></i>
+                <i class="bi bi-shield-check text-amber-600"></i>
                 <span>Panduan RBAC</span>
             </Link>
 
@@ -327,34 +381,22 @@ onUnmounted(() => {
             <!-- Real-time Notification Bell -->
             <AppNotificationBell class="shrink-0" />
 
-            <!-- Situs Paroki Link (Desktop) -->
-            <a
-                href="/"
-                target="_blank"
-                class="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs shadow-xs transition-all shrink-0"
-                title="Lihat Situs Publik Paroki"
-            >
-                <i class="fa-solid fa-house text-[11px]"></i>
-                <span>Situs Paroki</span>
-            </a>
-
-            <!-- User Menu Container (Dropdown on Mobile & Desktop) -->
+            <!-- User Menu Container (Dropdown matching BIMKAT) -->
             <div id="user-menu-container" class="relative shrink-0">
-                <!-- User Profile Trigger Button -->
                 <button
                     type="button"
                     @click="isUserMenuOpen = !isUserMenuOpen"
-                    class="inline-flex items-center gap-1.5 p-0.5 sm:p-1 md:px-2 md:py-1 rounded-xl bg-slate-100 hover:bg-amber-50 hover:text-amber-900 border border-slate-200/80 text-slate-700 text-xs font-semibold transition cursor-pointer shadow-2xs shrink-0"
+                    class="inline-flex items-center gap-2 p-1 md:px-2 md:py-1 rounded-xl bg-slate-100 hover:bg-slate-200/80 border border-slate-200/80 text-slate-700 text-xs font-semibold transition cursor-pointer shadow-2xs shrink-0"
                     title="Menu Pengguna"
                 >
                     <img
                         :src="userAvatar || '/images/avatar-default.jpg'"
                         alt="Foto Profil"
-                        class="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg object-cover border border-amber-500/40 shadow-2xs shrink-0"
+                        class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-cover border border-emerald-500/40 shadow-2xs shrink-0"
                         @error="(e) => { e.target.onerror = null; e.target.src = '/images/avatar-default.jpg'; }"
                     />
-                    <span class="hidden 2xl:inline font-bold truncate max-w-[110px]">{{ userName }}</span>
-                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 hidden 2xl:inline ml-0.5"></i>
+                    <span class="hidden md:inline font-bold text-slate-800 truncate max-w-[120px]">{{ userName }}</span>
+                    <i class="bi bi-chevron-down text-[11px] text-slate-400 hidden sm:inline ml-0.5 transition-transform duration-200" :class="{ 'rotate-180': isUserMenuOpen }"></i>
                 </button>
 
                 <!-- User Dropdown Popover Menu -->
@@ -368,18 +410,19 @@ onUnmounted(() => {
                 >
                     <div
                         v-if="isUserMenuOpen"
-                        class="absolute right-0 mt-2 w-56 rounded-2xl bg-white border border-slate-200 shadow-2xl z-50 overflow-hidden py-1.5 text-xs divide-y divide-slate-100"
+                        class="absolute right-0 mt-2 w-56 rounded-2xl bg-white border border-slate-100 shadow-2xl z-50 overflow-hidden py-1.5 text-xs divide-y divide-slate-100"
                     >
                         <!-- Header User Info -->
-                        <div class="px-3.5 py-2.5 bg-slate-50/80 flex items-center gap-2.5">
+                        <div class="px-4 py-2.5 bg-slate-50/80 flex items-center gap-2.5">
                             <img
                                 :src="userAvatar || '/images/avatar-default.jpg'"
                                 alt="Foto Profil"
-                                class="w-8 h-8 rounded-lg object-cover border border-amber-500/40 shrink-0"
+                                class="w-9 h-9 rounded-lg object-cover border border-emerald-500/40 shrink-0"
                             />
                             <div class="min-w-0">
+                                <p class="text-xs text-slate-400">Masuk sebagai</p>
                                 <p class="font-bold text-slate-900 truncate">{{ userName }}</p>
-                                <p class="text-[10px] text-amber-700 font-semibold truncate">{{ activeRole }}</p>
+                                <p class="text-[11px] text-emerald-600 font-semibold truncate">{{ activeRole }}</p>
                             </div>
                         </div>
 
@@ -388,29 +431,29 @@ onUnmounted(() => {
                             <Link
                                 :href="getHref('/profil-saya')"
                                 @click="isUserMenuOpen = false"
-                                class="w-full px-3.5 py-2 hover:bg-amber-50 hover:text-amber-900 text-slate-700 flex items-center gap-2.5 font-medium transition cursor-pointer"
+                                class="w-full px-4 py-2 hover:bg-slate-50 hover:text-emerald-800 text-slate-700 flex items-center gap-2.5 font-medium transition cursor-pointer"
                             >
-                                <i class="fa-solid fa-user-gear text-slate-400 w-4"></i>
+                                <i class="bi bi-person text-slate-400 w-4"></i>
                                 <span>Profil Saya</span>
+                            </Link>
+
+                            <Link
+                                :href="getHref('/panduan-hak-akses')"
+                                @click="isUserMenuOpen = false"
+                                class="w-full px-4 py-2 hover:bg-slate-50 hover:text-amber-800 text-slate-700 flex items-center gap-2.5 font-medium transition cursor-pointer"
+                            >
+                                <i class="bi bi-shield-check text-amber-500 w-4"></i>
+                                <span>Panduan Hak Akses</span>
                             </Link>
 
                             <a
                                 href="/"
                                 target="_blank"
-                                class="xl:hidden w-full px-3.5 py-2 hover:bg-amber-50 hover:text-amber-900 text-slate-700 flex items-center gap-2.5 font-medium transition cursor-pointer"
+                                class="w-full px-4 py-2 hover:bg-slate-50 hover:text-emerald-800 text-slate-700 flex items-center gap-2.5 font-medium transition cursor-pointer"
                             >
-                                <i class="fa-solid fa-house text-amber-500 w-4"></i>
-                                <span>Situs Paroki</span>
+                                <i class="bi bi-globe text-emerald-600 w-4"></i>
+                                <span>Situs Paroki Publik</span>
                             </a>
-
-                            <Link
-                                :href="getHref('/panduan-hak-akses')"
-                                @click="isUserMenuOpen = false"
-                                class="2xl:hidden w-full px-3.5 py-2 hover:bg-amber-50 hover:text-amber-900 text-slate-700 flex items-center gap-2.5 font-medium transition cursor-pointer"
-                            >
-                                <i class="fa-solid fa-shield-halved text-amber-600 w-4"></i>
-                                <span>Panduan RBAC</span>
-                            </Link>
                         </div>
 
                         <!-- Logout -->
@@ -418,15 +461,17 @@ onUnmounted(() => {
                             <button
                                 type="button"
                                 @click="isUserMenuOpen = false; showLogoutModal = true;"
-                                class="w-full px-3.5 py-2 hover:bg-rose-50 text-rose-700 flex items-center gap-2.5 font-bold transition cursor-pointer text-left"
+                                class="w-full px-4 py-2 hover:bg-rose-50 text-rose-700 flex items-center gap-2.5 font-bold transition cursor-pointer text-left"
                             >
-                                <i class="fa-solid fa-arrow-right-from-bracket w-4 text-rose-500"></i>
+                                <i class="bi bi-box-arrow-right w-4 text-rose-500"></i>
                                 <span>Keluar Aplikasi</span>
                             </button>
                         </div>
                     </div>
                 </transition>
             </div>
+
         </div>
+
     </header>
 </template>

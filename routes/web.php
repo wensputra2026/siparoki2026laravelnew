@@ -730,6 +730,45 @@ Route::get('/v2/{path?}', function ($path = '') {
 Route::middleware('auth')->group(function () {
     Route::post('/impersonate/leave', [\App\Http\Controllers\InertiaPanelController::class, 'leaveImpersonation'])->name('impersonate.leave');
     Route::post('/api/set-active-scope', [\App\Http\Controllers\InertiaPanelController::class, 'setActiveScope'])->name('api.set-active-scope');
+    Route::get('/api/users-list', function (\Illuminate\Http\Request $request) {
+        $authUser = auth()->user();
+        $isSuperAdmin = (int)($authUser?->role_id ?? 0) === 1
+            || in_array(strtolower(preg_replace('/[^a-z]/', '', $authUser?->role?->nama_role ?? $authUser?->role?->slug ?? '')), ['superadmin', 'superadministrator'], true);
+        if (!$isSuperAdmin && !session()->has('impersonated_by')) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $search   = $request->get('search', '');
+        $roleFilter = $request->get('role_id', '');
+        $status   = $request->get('status', 'aktif');
+        $query = \App\Models\User::with('role')
+            ->when($search, fn($q) => $q->where(function ($q2) use ($search) {
+                $q2->where('nama_lengkap', 'like', "%{$search}%")
+                   ->orWhere('username', 'like', "%{$search}%")
+                   ->orWhere('email', 'like', "%{$search}%");
+            }))
+            ->when($roleFilter, fn($q) => $q->where('role_id', $roleFilter))
+            ->when($status === 'aktif', fn($q) => $q->where('status', 1))
+            ->when($status === 'nonaktif', fn($q) => $q->where('status', 0))
+            ->where('id', '!=', $authUser->id)
+            ->orderBy('nama_lengkap')
+            ->limit(120)
+            ->get(['id', 'uuid', 'nama_lengkap', 'username', 'email', 'foto', 'status', 'role_id', 'last_login']);
+        $roles = \App\Models\Role::select('id', 'nama_role')->where('status', 1)->orderBy('nama_role')->get();
+        return response()->json([
+            'users' => $query->map(fn($u) => [
+                'id'         => $u->uuid ?? $u->id,
+                'nama'       => $u->nama_lengkap ?? $u->username,
+                'username'   => $u->username,
+                'email'      => $u->email ?? '',
+                'foto'       => $u->foto ? (str_starts_with($u->foto, 'http') ? $u->foto : '/uploads/users/' . ltrim($u->foto, '/')) : null,
+                'status'     => (bool) $u->status,
+                'role_id'    => $u->role_id,
+                'nama_role'  => $u->role?->nama_role ?? '-',
+                'last_login' => $u->last_login?->diffForHumans() ?? 'Belum pernah',
+            ]),
+            'roles' => $roles,
+        ]);
+    })->name('api.users-list');
 });
 
 
