@@ -54,16 +54,29 @@
                 $cleanVideoPath = ltrim(str_replace(['assets/uploads/', 'uploads/'], '', $heroVideoFile), '/');
                 $posterUrl = '';
                 if (!empty($heroVideoPoster)) {
-                    if (str_starts_with($heroVideoPoster, 'http')) {
-                        $posterUrl = '';
+                    if (str_starts_with($heroVideoPoster, 'http://') || str_starts_with($heroVideoPoster, 'https://')) {
+                        $posterUrl = $heroVideoPoster;
                     } else {
                         $basePoster = basename($heroVideoPoster);
+                        $cleanPosterPath = ltrim(str_replace(['assets/uploads/', 'uploads/'], '', $heroVideoPoster), '/');
                         if (file_exists(public_path('assets/uploads/video/' . $basePoster))) {
                             $posterUrl = asset('assets/uploads/video/' . $basePoster);
+                        } elseif (file_exists(public_path('uploads/video/' . $basePoster))) {
+                            $posterUrl = asset('uploads/video/' . $basePoster);
                         } elseif (file_exists(public_path('assets/uploads/profil/' . $basePoster))) {
                             $posterUrl = asset('assets/uploads/profil/' . $basePoster);
+                        } elseif (file_exists(public_path('uploads/profil/' . $basePoster))) {
+                            $posterUrl = asset('uploads/profil/' . $basePoster);
+                        } elseif (file_exists(public_path('assets/uploads/' . $cleanPosterPath))) {
+                            $posterUrl = asset('assets/uploads/' . $cleanPosterPath);
+                        } elseif (file_exists(public_path('uploads/' . $cleanPosterPath))) {
+                            $posterUrl = asset('uploads/' . $cleanPosterPath);
+                        } elseif (file_exists(public_path($cleanPosterPath))) {
+                            $posterUrl = asset($cleanPosterPath);
+                        } elseif (file_exists(storage_path('app/public/' . $cleanPosterPath))) {
+                            $posterUrl = asset('storage/' . $cleanPosterPath);
                         } else {
-                            $posterUrl = asset('assets/uploads/' . $basePoster);
+                            $posterUrl = '';
                         }
                     }
                 }
