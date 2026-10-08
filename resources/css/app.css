@@ -161,3 +161,12 @@ table tbody tr {
 .animate-progress-bar {
     animation: progress-bar 1.5s ease-in-out infinite;
 }
+
+/* === Utility: Hide scrollbar but keep scrolling functionality === */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

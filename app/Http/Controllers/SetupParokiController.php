@@ -26,6 +26,11 @@ class SetupParokiController extends Controller
     {
         try {
             PengaturanAplikasi::ensureSetupColumns();
+            if (Schema::hasTable('paroki') && !Schema::hasColumn('paroki', 'banner')) {
+                Schema::table('paroki', function ($table) {
+                    $table->string('banner', 255)->nullable()->after('logo');
+                });
+            }
         } catch (\Throwable $e) {}
 
         // Load all Keuskupans in Indonesia with their Dekenats and Parokis safely & optimized
@@ -180,15 +185,29 @@ class SetupParokiController extends Controller
             'status_paroki' => 'Mandiri / Definitif',
         ];
 
-        if ($logoPath) {
+        // Auto-create banner column in paroki table if not exists (e.g. production DB)
+        if (Schema::hasTable('paroki') && !Schema::hasColumn('paroki', 'banner')) {
+            try {
+                Schema::table('paroki', function ($table) {
+                    $table->string('banner', 255)->nullable()->after('logo');
+                });
+            } catch (\Throwable $e) {}
+        }
+
+        $parokiCols = Schema::hasTable('paroki') ? Schema::getColumnListing('paroki') : [];
+        if ($logoPath && in_array('logo', $parokiCols, true)) {
             $parokiPayload['logo'] = $logoPath;
         }
-        if ($bannerPath) {
+        if ($bannerPath && in_array('banner', $parokiCols, true)) {
             $parokiPayload['banner'] = $bannerPath;
         }
 
         if ($paroki) {
             $paroki->update($parokiPayload);
+            if ($bannerPath) {
+                $paroki->banner = $bannerPath;
+            }
+        }
         } else {
             // Generate next Paroki code
             $maxId = Paroki::max('id_paroki') ?? 0;

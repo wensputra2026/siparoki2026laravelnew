@@ -639,37 +639,37 @@ const submitForm = () => {
             <!-- Header Banner -->
             <div class="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-5 shadow-2xs">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-start sm:items-center gap-3 min-w-0">
                         <Link
                             :href="`${basePrefix}/kk-katolik`"
-                            class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition cursor-pointer shrink-0"
+                            class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition cursor-pointer shrink-0 mt-0.5 sm:mt-0"
                             title="Kembali ke Daftar KK"
                         >
                             <i class="fa-solid fa-arrow-left text-sm"></i>
                         </Link>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <h1 class="text-lg font-black text-slate-900 tracking-tight">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <h1 class="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-snug">
                                     {{ isEdit ? 'Edit Data Kartu Keluarga (KK) Katolik' : 'Form Tambah Kartu Keluarga (KK) Katolik Baru' }}
                                 </h1>
                                 <span
-                                    class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border"
+                                    class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border shrink-0"
                                     :class="isEdit ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-blue-50 text-blue-800 border-blue-200'"
                                 >
                                     {{ isEdit ? 'Mode Edit' : 'Data Master Baru' }}
                                 </span>
                             </div>
-                            <p class="text-xs text-slate-500 mt-0.5">
+                            <p class="text-[11px] sm:text-xs text-slate-500 mt-1 leading-relaxed">
                                 Formulir Pendataan Keluarga & Umat Katolik (SIPAROKI) Paroki St. Vinsensius a Paulo - Benlutu
                             </p>
                         </div>
                     </div>
 
                     <!-- Top Action Buttons -->
-                    <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto pt-2 sm:pt-0 border-t border-slate-100 sm:border-0 justify-end">
                         <Link
                             :href="`${basePrefix}/kk-katolik`"
-                            class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5"
+                            class="flex-1 sm:flex-none justify-center px-4 py-2.5 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5"
                         >
                             <i class="fa-solid fa-xmark text-xs"></i>
                             <span>Batal</span>
@@ -678,7 +678,7 @@ const submitForm = () => {
                             type="button"
                             :disabled="form.processing"
                             @click="submitForm"
-                            class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm shadow-blue-500/25 transition flex items-center gap-1.5 cursor-pointer disabled:opacity-60"
+                            class="flex-1 sm:flex-none justify-center px-4 py-2.5 sm:py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm shadow-blue-500/25 transition flex items-center gap-1.5 cursor-pointer disabled:opacity-60"
                         >
                             <i v-if="form.processing" class="fa-solid fa-circle-notch fa-spin text-xs"></i>
                             <i v-else class="fa-solid fa-floppy-disk text-xs"></i>
@@ -687,43 +687,43 @@ const submitForm = () => {
                     </div>
                 </div>
 
-                <!-- Navigation Tabs -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-4 mt-4 border-t border-slate-100">
+                <!-- Navigation Tabs (2x2 Grid on Mobile, 4 Cols on Desktop - All Tabs Visible) -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 pt-3 mt-3 sm:pt-4 sm:mt-4 border-t border-slate-100">
                     <button
                         type="button"
                         @click="activeTab = 'identitas'"
-                        class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
-                        :class="activeTab === 'identitas' ? 'bg-blue-600 text-white shadow-xs' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80'"
+                        class="px-2.5 py-2.5 sm:px-3.5 sm:py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer shadow-2xs"
+                        :class="activeTab === 'identitas' ? 'bg-blue-600 text-white ring-2 ring-blue-600/30' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80'"
                     >
-                        <i class="fa-solid fa-church"></i>
-                        <span>A. Hirarki & Dokumen KK</span>
+                        <i class="fa-solid fa-church text-xs shrink-0"></i>
+                        <span class="truncate">A. Hirarki & Dokumen</span>
                     </button>
                     <button
                         type="button"
                         @click="activeTab = 'kepala'"
-                        class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
-                        :class="activeTab === 'kepala' ? 'bg-blue-600 text-white shadow-xs' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80'"
+                        class="px-2.5 py-2.5 sm:px-3.5 sm:py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer shadow-2xs"
+                        :class="activeTab === 'kepala' ? 'bg-blue-600 text-white ring-2 ring-blue-600/30' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80'"
                     >
-                        <i class="fa-solid fa-user-tie"></i>
-                        <span>B. Kepala Keluarga & Domisili</span>
+                        <i class="fa-solid fa-user-tie text-xs shrink-0"></i>
+                        <span class="truncate">B. Kepala Keluarga</span>
                     </button>
                     <button
                         type="button"
                         @click="activeTab = 'domisili'"
-                        class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
-                        :class="activeTab === 'domisili' ? 'bg-blue-600 text-white shadow-xs' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80'"
+                        class="px-2.5 py-2.5 sm:px-3.5 sm:py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer shadow-2xs"
+                        :class="activeTab === 'domisili' ? 'bg-blue-600 text-white ring-2 ring-blue-600/30' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80'"
                     >
-                        <i class="fa-solid fa-map-location-dot"></i>
-                        <span>C. Alamat & Wilayah Sipil</span>
+                        <i class="fa-solid fa-map-location-dot text-xs shrink-0"></i>
+                        <span class="truncate">C. Alamat & Sipil</span>
                     </button>
                     <button
                         type="button"
                         @click="activeTab = 'anggota'"
-                        class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
-                        :class="activeTab === 'anggota' ? 'bg-blue-600 text-white shadow-xs' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80'"
+                        class="px-2.5 py-2.5 sm:px-3.5 sm:py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer shadow-2xs"
+                        :class="activeTab === 'anggota' ? 'bg-blue-600 text-white ring-2 ring-blue-600/30' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80'"
                     >
-                        <i class="fa-solid fa-users"></i>
-                        <span>D. Anggota Jiwa ({{ form.anggota.length }})</span>
+                        <i class="fa-solid fa-users text-xs shrink-0"></i>
+                        <span class="truncate">D. Anggota Jiwa ({{ form.anggota.length }})</span>
                     </button>
                 </div>
             </div>
@@ -868,6 +868,18 @@ const submitForm = () => {
                                 <option value="Ditolak">Ditolak / Data Tidak Sesuai</option>
                             </select>
                         </div>
+                    </div>
+
+                    <!-- Step Navigation Tab 1 -->
+                    <div class="pt-4 border-t border-slate-100 flex justify-end">
+                        <button
+                            type="button"
+                            @click="activeTab = 'kepala'"
+                            class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                        >
+                            <span>Lanjut: Data Kepala Keluarga</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -1077,6 +1089,26 @@ const submitForm = () => {
                             />
                         </div>
                     </div>
+
+                    <!-- Step Navigation Tab 2 -->
+                    <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+                        <button
+                            type="button"
+                            @click="activeTab = 'identitas'"
+                            class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                            <i class="fa-solid fa-arrow-left text-xs"></i>
+                            <span>Kembali: Hirarki & Dokumen</span>
+                        </button>
+                        <button
+                            type="button"
+                            @click="activeTab = 'domisili'"
+                            class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                        >
+                            <span>Lanjut: Alamat & Wilayah Sipil</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- TAB 4: DOMISILI & WILAYAH SIPIL -->
@@ -1192,22 +1224,42 @@ const submitForm = () => {
                             </div>
                         </div>
                     </div>
+
+                    <!-- Step Navigation Tab 3 -->
+                    <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+                        <button
+                            type="button"
+                            @click="activeTab = 'kepala'"
+                            class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                            <i class="fa-solid fa-arrow-left text-xs"></i>
+                            <span>Kembali: Data Kepala Keluarga</span>
+                        </button>
+                        <button
+                            type="button"
+                            @click="activeTab = 'anggota'"
+                            class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                        >
+                            <span>Lanjut: Daftar Anggota Jiwa ({{ form.anggota.length }})</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- TAB 5: ANGGOTA KELUARGA -->
                 <div v-show="activeTab === 'anggota'" class="rounded-2xl bg-white border border-slate-200/80 p-5 shadow-2xs space-y-4">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
                         <div>
                             <h2 class="text-sm font-black text-slate-900 flex items-center gap-2">
                                 <i class="fa-solid fa-users text-blue-600"></i>
                                 <span>Daftar Anggota Keluarga (Umat / Jiwa)</span>
                             </h2>
-                            <p class="text-xs text-slate-500">Tambahkan seluruh anggota yang tercantum dalam Kartu Keluarga ini.</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Tambahkan seluruh anggota yang tercantum dalam Kartu Keluarga ini.</p>
                         </div>
                         <button
                             type="button"
                             @click="addAnggota"
-                            class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shrink-0"
+                            class="w-full sm:w-auto justify-center px-3.5 py-2 sm:py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-2xs"
                         >
                             <i class="fa-solid fa-user-plus text-xs"></i>
                             <span>+ Tambah Anggota</span>
@@ -1675,17 +1727,39 @@ const submitForm = () => {
                             </div>
                         </div>
                     </div>
+
+                    <!-- Step Navigation Tab 4 -->
+                    <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+                        <button
+                            type="button"
+                            @click="activeTab = 'domisili'"
+                            class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                            <i class="fa-solid fa-arrow-left text-xs"></i>
+                            <span>Kembali: Alamat & Wilayah Sipil</span>
+                        </button>
+                        <button
+                            type="button"
+                            :disabled="form.processing"
+                            @click="submitForm"
+                            class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm shadow-emerald-500/25 transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                        >
+                            <i v-if="form.processing" class="fa-solid fa-circle-notch fa-spin text-xs"></i>
+                            <i v-else class="fa-solid fa-floppy-disk text-xs"></i>
+                            <span>{{ isEdit ? 'Simpan Perubahan Data KK' : 'Simpan Data KK Baru' }}</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Bottom Sticky Action Bar -->
-                <div class="rounded-2xl bg-white border border-slate-200/80 p-4 shadow-2xs flex items-center justify-between">
-                    <div class="text-xs text-slate-500">
+                <div class="rounded-2xl bg-white border border-slate-200/80 p-4 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div class="text-xs text-slate-500 text-center sm:text-left">
                         Pastikan seluruh data yang bertanda bintang <span class="text-rose-500 font-bold">*</span> terisi dengan benar.
                     </div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
                         <Link
                             :href="`${basePrefix}/kk-katolik`"
-                            class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5"
+                            class="flex-1 sm:flex-none justify-center px-4 py-2.5 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5"
                         >
                             <i class="fa-solid fa-xmark text-xs"></i>
                             <span>Batal</span>
@@ -1693,7 +1767,7 @@ const submitForm = () => {
                         <button
                             type="submit"
                             :disabled="form.processing"
-                            class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm shadow-blue-500/25 transition flex items-center gap-1.5 cursor-pointer disabled:opacity-60"
+                            class="flex-1 sm:flex-none justify-center px-5 py-2.5 sm:py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm shadow-blue-500/25 transition flex items-center gap-1.5 cursor-pointer disabled:opacity-60"
                         >
                             <i v-if="form.processing" class="fa-solid fa-circle-notch fa-spin text-xs"></i>
                             <i v-else class="fa-solid fa-floppy-disk text-xs"></i>

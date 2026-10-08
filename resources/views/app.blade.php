@@ -6,11 +6,24 @@
 
         <title inertia>{{ config('app.name', 'SIPAROKI') }}</title>
 
-        <!-- Dynamic Favicon -->
-        @if(!empty($globalLogo))
-            <link rel="icon" type="image/webp" href="{{ $globalLogo }}">
-            <link rel="shortcut icon" href="{{ $globalLogo }}">
-        @endif
+        <!-- Dynamic Favicon (Synchronized with Parish Profile & Cache-Busted) -->
+        @php
+            $faviconRaw = !empty($globalFavicon) ? $globalFavicon : (!empty($globalLogo) ? $globalLogo : null);
+            $faviconUrl = $faviconRaw ? (str_starts_with($faviconRaw, 'http') ? $faviconRaw : asset(ltrim($faviconRaw, '/'))) : asset('favicon.png');
+            $faviconPath = parse_url($faviconUrl, PHP_URL_PATH);
+            $faviconExt = strtolower(pathinfo($faviconPath, PATHINFO_EXTENSION));
+            $faviconMime = match($faviconExt) {
+                'webp' => 'image/webp',
+                'png' => 'image/png',
+                'jpg', 'jpeg' => 'image/jpeg',
+                'svg' => 'image/svg+xml',
+                default => 'image/x-icon',
+            };
+            $faviconVersion = \Illuminate\Support\Facades\Cache::get('global_view_data_version', 1) . '_' . (file_exists(public_path('favicon.ico')) ? filemtime(public_path('favicon.ico')) : time());
+        @endphp
+        <link rel="icon" type="{{ $faviconMime }}" href="{{ $faviconUrl }}?v={{ $faviconVersion }}">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v={{ $faviconVersion }}">
+        <link rel="apple-touch-icon" href="{{ $faviconUrl }}?v={{ $faviconVersion }}">
 
         <!-- Google Fonts: Inter (BIMKAT Official Typography Spec) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">

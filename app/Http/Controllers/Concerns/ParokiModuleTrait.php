@@ -312,9 +312,62 @@ trait ParokiModuleTrait
             session()->put('default_paroki_id', $parokiId);
         }
 
+        if (!empty($paroki->logo)) {
+            $this->generateFaviconsFromLogo($paroki->logo);
+        }
+
         if (method_exists($this, 'clearFastAccessCache')) {
             $this->clearFastAccessCache();
         }
+    }
+
+    protected function generateFaviconsFromLogo(?string $logoPath): void
+    {
+        if (empty($logoPath)) return;
+        $fullPath = public_path(ltrim($logoPath, '/'));
+        if (!file_exists($fullPath)) return;
+
+        try {
+            $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+            $img = match($ext) {
+                'webp' => function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($fullPath) : null,
+                'png' => function_exists('imagecreatefrompng') ? @imagecreatefrompng($fullPath) : null,
+                'jpg', 'jpeg' => function_exists('imagecreatefromjpeg') ? @imagecreatefromjpeg($fullPath) : null,
+                default => null,
+            };
+
+            if (!$img) return;
+
+            $width = imagesx($img);
+            $height = imagesy($img);
+
+            // 64x64 PNG
+            $png64 = imagecreatetruecolor(64, 64);
+            imagealphablending($png64, false);
+            imagesavealpha($png64, true);
+            $transparent = imagecolorallocatealpha($png64, 255, 255, 255, 127);
+            imagefilledrectangle($png64, 0, 0, 64, 64, $transparent);
+            imagecopyresampled($png64, $img, 0, 0, 0, 0, 64, 64, $width, $height);
+            @imagepng($png64, public_path('favicon.png'));
+
+            // 32x32 ICO
+            $png32 = imagecreatetruecolor(32, 32);
+            imagealphablending($png32, false);
+            imagesavealpha($png32, true);
+            imagefilledrectangle($png32, 0, 0, 32, 32, $transparent);
+            imagecopyresampled($png32, $img, 0, 0, 0, 0, 32, 32, $width, $height);
+
+            ob_start();
+            @imagepng($png32);
+            $pngData = ob_get_clean();
+            $pngSize = strlen($pngData);
+
+            $icoHeader = pack('vvv', 0, 1, 1);
+            $icoDir = pack('CCCCvvVV', 32, 32, 0, 0, 1, 32, $pngSize, 22);
+            $icoData = $icoHeader . $icoDir . $pngData;
+
+            @file_put_contents(public_path('favicon.ico'), $icoData);
+        } catch (\Throwable $e) {}
     }
 
 

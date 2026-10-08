@@ -152,6 +152,15 @@ trait ProfileModuleTrait
         $parokiId = (int) ($request->input('paroki_id') ?: $request->input('id_paroki') ?: $this->defaultParokiIdFromProfile());
         $paroki = Paroki::findOrFail($parokiId);
 
+        // Auto-create banner column in paroki table if not exists (e.g. production DB)
+        if (Schema::hasTable('paroki') && !Schema::hasColumn('paroki', 'banner')) {
+            try {
+                Schema::table('paroki', function ($table) {
+                    $table->string('banner', 255)->nullable()->after('logo');
+                });
+            } catch (\Throwable $e) {}
+        }
+
         $validCols = $this->schemaColumns('paroki');
         $cleanData = [];
 
@@ -160,7 +169,11 @@ trait ProfileModuleTrait
             $ext = $file->getClientOriginalExtension() ?: 'webp';
             $filename = 'paroki_' . time() . '_' . Str::random(8) . '.' . $ext;
             $file->move(public_path('uploads/paroki'), $filename);
-            $cleanData['logo'] = '/uploads/paroki/' . $filename;
+            $logoPath = '/uploads/paroki/' . $filename;
+            if (in_array('logo', $validCols, true)) {
+                $cleanData['logo'] = $logoPath;
+            }
+            $paroki->logo = $logoPath;
         }
 
         if ($request->hasFile('banner')) {
@@ -171,7 +184,11 @@ trait ProfileModuleTrait
                 @mkdir(public_path('uploads/banner'), 0775, true);
             }
             $file->move(public_path('uploads/banner'), $filename);
-            $cleanData['banner'] = '/uploads/banner/' . $filename;
+            $bannerPath = '/uploads/banner/' . $filename;
+            if (in_array('banner', $validCols, true)) {
+                $cleanData['banner'] = $bannerPath;
+            }
+            $paroki->banner = $bannerPath;
 
             // Pastikan fallback statis juga tersinkronisasi
             try {
@@ -190,7 +207,11 @@ trait ProfileModuleTrait
             $ext = $file->getClientOriginalExtension() ?: 'webp';
             $filename = 'gereja_' . time() . '_' . Str::random(8) . '.' . $ext;
             $file->move(public_path('uploads/gereja'), $filename);
-            $cleanData['foto_gereja'] = '/uploads/gereja/' . $filename;
+            $fotoGerejaPath = '/uploads/gereja/' . $filename;
+            if (in_array('foto_gereja', $validCols, true)) {
+                $cleanData['foto_gereja'] = $fotoGerejaPath;
+            }
+            $paroki->foto_gereja = $fotoGerejaPath;
         }
 
         $inputData = $request->except(['_token', '_method', 'logo', 'banner', 'foto_gereja']);
@@ -204,7 +225,9 @@ trait ProfileModuleTrait
             $cleanData['updated_by'] = auth()->id();
         }
 
-        $paroki->update($cleanData);
+        if (!empty($cleanData)) {
+            $paroki->update($cleanData);
+        }
         $paroki->refresh();
 
         $this->syncParokiToGlobalSettings($paroki);

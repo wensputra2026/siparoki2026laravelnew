@@ -9,14 +9,39 @@
 @endphp
 
 <section class="page-header">
-    <div class="container">
+    <div class="container text-center">
         <span class="st-badge"><i class="fas fa-location-dot me-1"></i> Wilayah Pelayanan</span>
-        <h1>Stasi &amp; Kapela</h1>
-        <p>Profil wilayah pelayanan, pusat komunitas umat, dan lokasi peribadatan dalam teritori paroki.</p>
+        <h1 style="color: #ffffff !important; text-shadow: 0 2px 10px rgba(0,0,0,0.8) !important; font-weight: 800 !important;">Stasi &amp; Kapela</h1>
+        <p style="color: #f1f5f9 !important; text-shadow: 0 1px 6px rgba(0,0,0,0.85) !important; font-weight: 500 !important; font-size: clamp(0.95rem, 2vw, 1.1rem) !important; max-width: 720px; margin: 0 auto !important;">
+            Profil wilayah pelayanan, pusat komunitas umat, dan lokasi peribadatan dalam teritori paroki.
+        </p>
     </div>
 </section>
 
 <style>
+/* Page Header Readability Guaranteed */
+.page-header h1 {
+    color: #ffffff !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8) !important;
+    font-weight: 800 !important;
+}
+.page-header p {
+    color: #f1f5f9 !important;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85) !important;
+    font-weight: 500 !important;
+    font-size: clamp(0.95rem, 2vw, 1.1rem) !important;
+}
+.page-header .st-badge {
+    background: rgba(255, 255, 255, 0.22) !important;
+    color: #fef08a !important;
+    border: 1px solid rgba(255, 255, 255, 0.40) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+}
+.page-header .st-badge i {
+    color: #fef08a !important;
+}
+
 /* Responsive Chapel Toolbar & Search System */
 .chapel-toolbar-wrap {
     background: #ffffff !important;

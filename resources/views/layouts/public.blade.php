@@ -160,13 +160,72 @@
             }
         }
     @endphp
-    @if(!empty($resolvedHeaderBg))
     <style>
         .page-header {
-            background: linear-gradient(135deg, rgba(0, 48, 40, 0.75) 0%, rgba(0, 95, 84, 0.70) 50%, rgba(2, 38, 30, 0.80) 100%), url('{{ $resolvedHeaderBg }}?v={{ $headerBgVersion }}') center/cover no-repeat, linear-gradient(135deg, #004d40 0%, #00796b 50%, #00332c 100%) !important;
+            @if(!empty($resolvedHeaderBg))
+            background: linear-gradient(135deg, rgba(0, 32, 28, 0.88) 0%, rgba(0, 68, 60, 0.82) 50%, rgba(1, 26, 20, 0.92) 100%), url('{{ $resolvedHeaderBg }}?v={{ $headerBgVersion }}') center/cover no-repeat, linear-gradient(135deg, #004d40 0%, #00796b 50%, #00332c 100%) !important;
+            @else
+            background: linear-gradient(135deg, #00382f 0%, #005f54 50%, #00261e 100%) !important;
+            @endif
+            padding: 72px 16px 48px !important;
+            color: #ffffff !important;
+            text-align: center !important;
+            position: relative !important;
+        }
+        .page-header h1,
+        body.public-portal .page-header h1,
+        body.public-portal main .page-header h1 {
+            color: #ffffff !important;
+            font-size: clamp(1.8rem, 4.5vw, 2.75rem) !important;
+            font-weight: 800 !important;
+            letter-spacing: -0.02em !important;
+            margin-bottom: 12px !important;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.75), 0 1px 3px rgba(0, 0, 0, 0.9) !important;
+        }
+        .page-header p,
+        body.public-portal .page-header p,
+        body.public-portal main .page-header p {
+            color: #f1f5f9 !important;
+            font-size: clamp(0.95rem, 2vw, 1.1rem) !important;
+            font-weight: 500 !important;
+            line-height: 1.65 !important;
+            max-width: 760px !important;
+            margin: 0 auto !important;
+            opacity: 0.98 !important;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85), 0 1px 3px rgba(0, 0, 0, 0.9) !important;
+        }
+        .page-header .st-badge,
+        body.public-portal main .page-header .st-badge,
+        body.public-portal .page-header .st-badge {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 7px !important;
+            background: rgba(255, 255, 255, 0.22) !important;
+            color: #fef08a !important;
+            border: 1px solid rgba(255, 255, 255, 0.40) !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            font-size: 0.8rem !important;
+            font-weight: 750 !important;
+            padding: 6px 18px !important;
+            border-radius: 9999px !important;
+            margin-bottom: 14px !important;
+            letter-spacing: 0.05em !important;
+            text-transform: uppercase !important;
+        }
+        .page-header .st-badge i,
+        body.public-portal main .page-header .st-badge i {
+            color: #fef08a !important;
+            font-size: 0.85rem !important;
+        }
+        .page-header .breadcrumb-item,
+        .page-header .breadcrumb-item a {
+            color: #f8fafc !important;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6) !important;
         }
     </style>
-    @endif
     @stack('styles')
     @if(request()->is('sakramen*'))
         @livewireStyles

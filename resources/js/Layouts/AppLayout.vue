@@ -1,5 +1,5 @@
 <script setup>
-import { provide, ref } from 'vue';
+import { provide, ref, onMounted, watch } from 'vue';
 import { useRoleMenu, RoleMenuKey } from '../composables/useRoleMenu.js';
 import AppTopbar from '../Components/AppTopbar.vue';
 import AppSidebar from '../Components/AppSidebar.vue';
@@ -45,6 +45,32 @@ const {
     leaveImpersonation,
     isSuperAdmin,
 } = menu;
+
+// Synchronize browser tab favicon with active parish logo
+const syncFavicon = () => {
+    const iconUrl = page.props.app?.favicon || page.props.app?.logo;
+    if (!iconUrl) return;
+    const fullUrl = iconUrl.startsWith('http') ? iconUrl : (iconUrl.startsWith('/') ? iconUrl : '/' + iconUrl);
+    const links = document.querySelectorAll("link[rel*='icon']");
+    if (links.length > 0) {
+        links.forEach(el => {
+            el.href = fullUrl;
+        });
+    } else {
+        const link = document.createElement('link');
+        link.rel = 'icon';
+        link.href = fullUrl;
+        document.head.appendChild(link);
+    }
+};
+
+onMounted(() => {
+    syncFavicon();
+});
+
+watch(() => page.props.app?.logo, () => {
+    syncFavicon();
+});
 </script>
 
 <template>
@@ -115,14 +141,14 @@ const {
                 </main>
 
                 <!-- 4. FIXED BACKEND FOOTER (Exact BIMKAT Spec) -->
-                <footer class="h-11 w-full shrink-0 border-t border-slate-200/80 bg-white/95 backdrop-blur-sm px-4 sm:px-8 flex items-center justify-between text-[11px] sm:text-xs text-slate-500 z-20 select-none">
-                    <div class="flex items-center gap-2 font-medium">
-                        <span>&copy; {{ new Date().getFullYear() }} {{ page.props.app?.name || 'SIPAROKI' }} &bull; {{ page.props.app?.nama_paroki || 'St. Vinsensius a Paulo - Benlutu' }}. All rights reserved.</span>
+                <footer class="min-h-11 py-2 sm:py-0 sm:h-11 w-full shrink-0 border-t border-slate-200/80 bg-white/95 backdrop-blur-sm px-3 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4 text-[11px] sm:text-xs text-slate-500 z-20 select-none">
+                    <div class="flex items-center gap-1.5 font-medium text-center sm:text-left min-w-0 max-w-full">
+                        <span class="truncate">&copy; {{ new Date().getFullYear() }} {{ page.props.app?.name || 'SIPAROKI' }} &bull; {{ page.props.app?.nama_paroki || 'St. Vinsensius a Paulo - Benlutu' }}</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <span class="hidden sm:inline text-slate-400 text-[11px]">Peran Aktif: <b class="text-emerald-800 font-semibold">{{ activeRole }}</b></span>
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                        <span class="hidden md:inline text-slate-400 text-[11px]">Peran Aktif: <b class="text-emerald-800 font-semibold">{{ activeRole }}</b></span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] sm:text-[11px] font-bold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                             <span>Sistem Aktif</span>
                         </span>
                     </div>

@@ -555,10 +555,13 @@ body.public-portal main .st-badge {
 }
 
 body.public-portal main .page-hero .st-badge,
-body.public-portal main .page-banner .st-badge {
-    background: rgba(255, 255, 255, 0.12) !important;
-    border-color: rgba(255, 255, 255, 0.18) !important;
-    color: #fef3c7 !important;
+body.public-portal main .page-banner .st-badge,
+body.public-portal main .page-header .st-badge,
+body.public-portal .page-header .st-badge {
+    background: rgba(255, 255, 255, 0.22) !important;
+    border-color: rgba(255, 255, 255, 0.40) !important;
+    color: #fef08a !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
 }
 
 body.public-portal .section-title h2,
@@ -1803,8 +1806,10 @@ body.public-portal .navbar-collapse,
     }
 
     body.public-portal .page-header p {
-        font-size: 0.84rem !important;
+        color: #f1f5f9 !important;
+        font-size: 0.88rem !important;
         line-height: 1.5 !important;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.85) !important;
     }
 
     /* 3. Card Grids & Lists (Warta, Berita, Renungan, Kapela, Direktori) */
