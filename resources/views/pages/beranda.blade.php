@@ -365,13 +365,13 @@
 </section>
 
 <!-- ===== PETA WILAYAH & KAPELA (WEBGIS INTERAKTIF) SECTION ===== -->
-<section id="peta-wilayah-kapela" class="py-16 bg-slate-100/70 dark:bg-[#090e1a] border-t border-b border-slate-200 dark:border-slate-800 relative">
-    <div class="max-w-6xl mx-auto px-4 mb-8">
+<section id="peta-wilayah-kapela" class="py-5 bg-light position-relative border-top border-bottom">
+    <div class="container mb-4">
         <div class="section-title text-center mb-0">
-            <span class="badge mb-2 px-3 py-2" style="background: rgba(0, 137, 123, 0.1); color: var(--primary-teal, #00897b); font-weight: 700; border-radius: 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+            <span class="badge mb-2 px-3 py-2" style="background: rgba(0, 137, 123, 0.12); color: var(--primary-teal, #00897b); font-weight: 700; border-radius: 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
                 <i class="fas fa-map-marked-alt me-1"></i> Teritorial Pastoral
             </span>
-            <h2 style="font-size: 2.2rem; font-weight: 800; color: #1e293b;" class="dark:text-white">
+            <h2 style="font-size: clamp(1.65rem, 3.5vw, 2.3rem); font-weight: 800; color: #1e293b;">
                 Peta Wilayah <span style="color: var(--primary-orange, #ff9800);">Stasi &amp; Kapela</span>
             </h2>
             <p style="color: #64748b; font-size: 0.95rem; max-width: 680px; margin: 8px auto 0;">
@@ -380,13 +380,13 @@
         </div>
     </div>
 
-    {{-- Full Width Map (Edge to Edge) --}}
-    <div class="w-full relative shadow-inner border-y border-slate-300/80 dark:border-[#263a55]">
-        <div id="home-map-kapela" class="online-map" style="height: 520px; width: 100%;"></div>
+    {{-- Full Width Map (Edge to Edge with responsive height) --}}
+    <div class="w-100 position-relative shadow-sm border-top border-bottom" style="overflow: hidden;">
+        <div id="home-map-kapela" class="online-map" style="height: clamp(380px, 50vh, 520px); width: 100%;"></div>
 
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400]">
-            <a href="/peta-kapela" class="inline-flex items-center gap-2 bg-sky-600/95 hover:bg-sky-600 backdrop-blur-md text-white font-semibold px-6 py-3 rounded-full text-sm transition shadow-xl hover:shadow-sky-600/30 border border-white/20">
-                <i class="fas fa-expand-arrows-alt text-xs"></i> <span>Buka Peta Layar Penuh</span>
+        <div class="position-absolute bottom-0 start-50 translate-middle-x mb-4" style="z-index: 400;">
+            <a href="/peta-kapela" class="btn btn-primary d-inline-flex align-items-center gap-2 px-4 py-2.5 rounded-pill shadow-lg text-white" style="background: linear-gradient(135deg, #0284c7, #0369a1); border: 1.5px solid rgba(255,255,255,0.4); font-weight: 700; font-size: 0.88rem;">
+                <i class="fas fa-expand-arrows-alt"></i> <span>Buka Peta Layar Penuh</span>
             </a>
         </div>
     </div>
@@ -674,26 +674,26 @@
 
 <!-- ===== BANNER CEK DATA UMAT VIA NIK ===== -->
 <div class="container my-5">
-    <div class="cek-umat-banner-section py-4 px-3 px-md-4" style="background: linear-gradient(135deg, #004d40 0%, #00695c 50%, #004d40 100%); border-radius: 20px; border: 1.5px solid rgba(255, 255, 255, 0.25); box-shadow: 0 12px 32px rgba(0, 40, 30, 0.3);">
-        <div class="row align-items-center g-3">
+    <div class="cek-umat-banner-section p-4 p-md-5" style="background: linear-gradient(135deg, #004d40 0%, #00695c 50%, #004d40 100%); border-radius: 24px; border: 1.5px solid rgba(255, 255, 255, 0.25); box-shadow: 0 14px 36px rgba(0, 40, 30, 0.25);">
+        <div class="row align-items-center g-4">
             <div class="col-lg-8">
-                <div class="d-flex align-items-center gap-3">
-                    <div style="width: 64px; height: 64px; border-radius: 16px; background: rgba(255, 255, 255, 0.18); border: 2px solid rgba(255, 255, 255, 0.35); display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.18);">
+                <div class="d-flex flex-column flex-sm-row align-items-center align-items-sm-start text-center text-sm-start gap-3">
+                    <div style="width: 64px; height: 64px; border-radius: 18px; background: rgba(255, 255, 255, 0.18); border: 2px solid rgba(255, 255, 255, 0.35); display: flex; align-items: center; justify-content: center; font-size: 1.85rem; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.18);">
                         <i class="fa-solid fa-id-card" style="color: #ffc107 !important; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));"></i>
                     </div>
                     <div>
-                        <h3 class="fw-bold" style="color: #ffffff !important; font-size: 1.45rem; margin-bottom: 0.35rem; text-shadow: 0 2px 6px rgba(0,0,0,0.35); letter-spacing: -0.01em;">
+                        <h3 class="fw-bold" style="color: #ffffff !important; font-size: clamp(1.2rem, 2.5vw, 1.55rem); margin-bottom: 0.4rem; text-shadow: 0 2px 6px rgba(0,0,0,0.35); letter-spacing: -0.01em;">
                             Cek Data Sensus &amp; Sakramen Umat Mandiri
                         </h3>
-                        <p class="mb-0" style="color: #f0fdfa !important; font-size: 0.95rem; line-height: 1.55; opacity: 0.95; font-weight: 400; text-shadow: 0 1px 3px rgba(0,0,0,0.25);">
+                        <p class="mb-0" style="color: #f0fdfa !important; font-size: 0.95rem; line-height: 1.6; opacity: 0.95; font-weight: 400; text-shadow: 0 1px 3px rgba(0,0,0,0.25);">
                             Cukup masukkan NIK Anda untuk memeriksa data kependudukan gerejani, KUB, dan status sakramen inisiasi secara mandiri tanpa perlu login.
                         </p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 text-lg-end">
-                <a href="{{ route('cek-data-umat') }}" class="btn btn-warning fw-bold px-4 py-2.5 rounded-pill shadow" style="color: #00332c !important; background-color: #ffc107 !important; border: 2px solid #ffffff !important; font-size: 1rem; font-weight: 800 !important; box-shadow: 0 6px 18px rgba(0,0,0,0.2) !important;">
-                    <i class="fa-solid fa-magnifying-glass me-1.5"></i> Cek Data Sekarang
+            <div class="col-lg-4 text-center text-lg-end">
+                <a href="{{ route('cek-data-umat') }}" class="btn btn-warning fw-bold px-4 py-2.5 rounded-pill shadow-lg d-inline-flex align-items-center justify-content-center gap-2" style="color: #00332c !important; background-color: #ffc107 !important; border: 2px solid #ffffff !important; font-size: 0.95rem; font-weight: 800 !important;">
+                    <i class="fa-solid fa-magnifying-glass"></i> <span>Cek Data Sekarang</span>
                 </a>
             </div>
         </div>

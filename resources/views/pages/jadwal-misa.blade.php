@@ -63,39 +63,39 @@
         <div style="background: #ffffff; border-radius: 20px; padding: 30px; box-shadow: 0 5px 25px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; margin-bottom: 40px;">
             
             <!-- Month Navigation & Controls Bar -->
-            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px solid #f1f5f9;">
+            <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 mb-4 pb-3 border-bottom">
                 
-                <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="d-flex align-items-center gap-2 order-2 order-md-1">
                     <a href="{{ route('jadwal-misa', ['bulan' => $prevDate->month, 'tahun' => $prevDate->year]) }}" 
-                       style="display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: 0.2s;">
-                        <i class="fa-solid fa-chevron-left"></i> {{ $namaBulan[$prevDate->month] }}
+                       class="btn btn-sm btn-light border fw-bold px-3 py-2 rounded-3 text-secondary d-inline-flex align-items-center gap-1.5" style="font-size: 0.84rem;">
+                        <i class="fa-solid fa-chevron-left"></i> <span>{{ $namaBulan[$prevDate->month] }}</span>
                     </a>
                     
                     <a href="{{ route('jadwal-misa', ['bulan' => $nextDate->month, 'tahun' => $nextDate->year]) }}" 
-                       style="display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: 0.2s;">
-                        {{ $namaBulan[$nextDate->month] }} <i class="fa-solid fa-chevron-right"></i>
+                       class="btn btn-sm btn-light border fw-bold px-3 py-2 rounded-3 text-secondary d-inline-flex align-items-center gap-1.5" style="font-size: 0.84rem;">
+                        <span>{{ $namaBulan[$nextDate->month] }}</span> <i class="fa-solid fa-chevron-right"></i>
                     </a>
                 </div>
 
                 <!-- Current Month / Year Title -->
-                <div style="text-align: center;">
-                    <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-orange, #ff9800); display: block;">
+                <div class="text-center order-1 order-md-2 my-1 my-md-0">
+                    <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-orange, #ff9800); display: block;">
                         Kalender Liturgi Misa
                     </span>
-                    <h2 style="font-size: 1.6rem; font-weight: 800; color: #0f172a; margin: 0;">
+                    <h2 style="font-size: clamp(1.3rem, 2.8vw, 1.65rem); font-weight: 800; color: #0f172a; margin: 0;">
                         {{ $namaBulan[$bulanAktif] }} {{ $tahunAktif }}
                     </h2>
                 </div>
 
                 <!-- Month & Year Jump Selector -->
-                <form method="GET" action="{{ route('jadwal-misa') }}" style="display: flex; align-items: center; gap: 8px;">
-                    <select name="bulan" onchange="this.form.submit()" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 8px 12px; font-size: 0.82rem; font-weight: 600; color: #334155; outline: none;">
+                <form method="GET" action="{{ route('jadwal-misa') }}" class="d-flex align-items-center gap-2 order-3">
+                    <select name="bulan" onchange="this.form.submit()" class="form-select form-select-sm fw-semibold" style="width: auto; background-color: #f8fafc; border-color: #cbd5e1; font-size: 0.82rem;">
                         @foreach($namaBulan as $num => $bName)
                             <option value="{{ $num }}" {{ $bulanAktif == $num ? 'selected' : '' }}>{{ $bName }}</option>
                         @endforeach
                     </select>
 
-                    <select name="tahun" onchange="this.form.submit()" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 8px 12px; font-size: 0.82rem; font-weight: 600; color: #334155; outline: none;">
+                    <select name="tahun" onchange="this.form.submit()" class="form-select form-select-sm fw-semibold" style="width: auto; background-color: #f8fafc; border-color: #cbd5e1; font-size: 0.82rem;">
                         @for($y = now()->year - 2; $y <= now()->year + 2; $y++)
                             <option value="{{ $y }}" {{ $tahunAktif == $y ? 'selected' : '' }}>{{ $y }}</option>
                         @endfor
@@ -104,8 +104,13 @@
 
             </div>
 
+            <!-- Mobile Swipe Hint -->
+            <div class="d-md-none text-center text-muted small mb-2" style="font-size: 0.76rem;">
+                <i class="fa-solid fa-arrows-left-right me-1 text-primary"></i> Geser horizontal untuk melihat 7 hari kalender
+            </div>
+
             <!-- Calendar Table Grid -->
-            <div style="overflow-x: auto;">
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
                 <div style="min-width: 680px;">
                     
                     <!-- Days of Week Header -->
@@ -259,15 +264,15 @@
                                         $location = $misa->tempat ?? $misa->lokasi ?? 'Gereja Paroki St. Vinsensius a Paulo Benlutu';
                                     @endphp
 
-                                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+                                    <div class="p-3 p-md-4 rounded-3 border d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3" style="background: #f8fafc; border-color: #e2e8f0;">
                                         
                                         <!-- Time & Mass Name -->
-                                        <div style="display: flex; align-items: flex-start; gap: 14px; flex: 1; min-width: 260px;">
-                                            <div style="background: rgba(0,137,123,0.1); color: var(--primary-teal, #00897b); padding: 10px 14px; border-radius: 12px; text-align: center; shrink-0;">
+                                        <div class="d-flex align-items-start gap-3 w-100" style="min-width: 0; flex: 1;">
+                                            <div style="background: rgba(0,137,123,0.1); color: var(--primary-teal, #00897b); padding: 10px 14px; border-radius: 12px; text-align: center; flex-shrink: 0;">
                                                 <i class="fa-solid fa-clock" style="font-size: 1rem; display: block; margin-bottom: 2px;"></i>
                                                 <span style="font-size: 0.85rem; font-weight: 800; white-space: nowrap;">{{ $time }}</span>
                                             </div>
-                                            <div>
+                                            <div style="min-width: 0; word-break: break-word;">
                                                 <span style="display: inline-block; background: rgba(255,152,0,0.12); color: #d97706; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 8px; margin-bottom: 4px;">
                                                     {{ $misa->jenis_misa ?? 'Misa Kudus' }}
                                                 </span>
@@ -281,7 +286,7 @@
                                         </div>
 
                                         <!-- Pelayan & Intensi -->
-                                        <div style="display: flex; flex-direction: column; gap: 6px; min-width: 220px;">
+                                        <div class="d-flex flex-column gap-2 w-100" style="min-width: 0; max-width: 380px;">
                                             @if(!empty($misa->pelayan))
                                                 <div style="font-size: 0.8rem; color: #334155; display: flex; align-items: center; gap: 6px;">
                                                     <i class="fa-solid fa-user-tie text-amber-600"></i>

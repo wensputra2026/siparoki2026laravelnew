@@ -26,7 +26,7 @@
 <section class="content-section" style="padding: 60px 0 80px; background: #f4faf9;">
     <div class="container">
         
-        <div style="background: #ffffff; border-radius: 15px; padding: 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.06); border-left: 5px solid var(--primary-teal, #00897b);">
+        <div style="background: #ffffff; border-radius: 20px; padding: clamp(20px, 4vw, 36px) clamp(16px, 4vw, 40px); box-shadow: 0 5px 20px rgba(0,0,0,0.06); border-left: 5px solid var(--primary-teal, #00897b);">
             <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 22px;">
                 <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(0,137,123,0.1); color: var(--primary-teal, #00897b); display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
                     <i class="fas fa-landmark"></i>

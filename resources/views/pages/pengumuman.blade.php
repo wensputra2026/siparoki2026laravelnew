@@ -6,13 +6,18 @@
 <!-- Page Header / Breadcrumb Konoha Style -->
 <section class="page-header">
     <div class="container">
-        <h1 style="font-size: 2.6rem; font-weight: 700; margin-bottom: 15px; color: #ffffff;">Warta & Pengumuman</h1>
+        <span class="st-badge"><i class="fas fa-bullhorn me-1"></i> Pengumuman Paroki</span>
+        <h1>Warta & Pengumuman</h1>
+        <p>Informasi dan pengumuman resmi kegiatan pastoral {{ $globalNamaParoki ?? 'Paroki St. Vinsensius a Paulo - Benlutu' }}.</p>
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb" style="display: inline-flex; list-style: none; padding: 0; margin: 0 auto; gap: 12px; background: transparent; justify-content: center; align-items: center;">
-                <li class="breadcrumb-item" style="background: rgba(255,255,255,0.22); padding: 6px 18px; border-radius: 25px; font-size: 0.85rem;">
-                    <a href="/" style="color: white; text-decoration: none; font-weight: 500;">Beranda</a>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/">Beranda</a>
                 </li>
-                <li class="breadcrumb-item active" style="background: var(--primary-orange, #ff9800); color: white; padding: 6px 18px; border-radius: 25px; font-size: 0.85rem; font-weight: 600;">
+                <li class="breadcrumb-item">
+                    <a href="/warta">Warta Paroki</a>
+                </li>
+                <li class="breadcrumb-item active">
                     Pengumuman
                 </li>
             </ol>
@@ -21,8 +26,11 @@
 </section>
 
 <!-- Content Section Konoha Style -->
-<section class="content-section" style="padding: 60px 0 80px; background: #f4faf9;">
+<section class="content-section" style="padding: 45px 0 80px; background: #f4faf9; min-height: 70vh;">
     <div class="container">
+        
+        <!-- Unified Category Filter Bar -->
+        @include('partials.warta-filter-tabs')
         
         <div style="display: flex; flex-direction: column; gap: 24px;">
             @forelse($pengumuman ?? [] as $item)

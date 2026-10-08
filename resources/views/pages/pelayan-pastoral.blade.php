@@ -37,7 +37,7 @@
     <div class="container">
         
         {{-- Section 1: Pelayan Pastoral Yang Bertugas Saat Ini --}}
-        <div style="background: #ffffff; border-radius: 20px; padding: 35px 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.06); margin-bottom: 40px;">
+        <div style="background: #ffffff; border-radius: 20px; padding: clamp(20px, 4vw, 35px) clamp(16px, 4vw, 40px); box-shadow: 0 5px 20px rgba(0,0,0,0.06); margin-bottom: 40px;">
             <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 28px; border-bottom: 2px solid #f1f5f9; padding-bottom: 18px;">
                 <div>
                     <span style="display: inline-block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-orange, #ff9800); margin-bottom: 4px;">

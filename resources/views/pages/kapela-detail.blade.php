@@ -40,8 +40,106 @@
         $mapsUrl = 'https://www.google.com/maps?q=' . $kapela->latitude . ',' . $kapela->longitude;
     }
 
+    // Resolve narrative history & notes from keterangan or DB
+    $rawKeterangan = $kapela->keterangan ?? '';
+    $resolvedSejarah = !empty($kapela->sejarah) ? trim($kapela->sejarah) : '';
+    $extraCatatan = '';
+
+    if (empty($resolvedSejarah) && !empty($rawKeterangan)) {
+        // If "Sejarah:" exists, parse prefix metadata and history body
+        if (preg_match('/Sejarah\s*:\s*(.*)$/is', $rawKeterangan, $mSejarah)) {
+            $resolvedSejarah = trim($mSejarah[1]);
+            $prefix = trim(substr($rawKeterangan, 0, strpos($rawKeterangan, $mSejarah[0])));
+        } else {
+            $prefix = $rawKeterangan;
+        }
+
+        // Parse key-value metadata from prefix (e.g. Pelindung, Tipe lama, Koordinat, Maps)
+        if (preg_match_all('/(Pelindung|Tipe\s*lama|Koordinat|Maps)\s*:\s*([^:]+?)(?=(?:Pelindung|Tipe\s*lama|Koordinat|Maps)\s*:|$)/is', $prefix, $mMeta, PREG_SET_ORDER)) {
+            foreach ($mMeta as $match) {
+                $mKey = strtolower(str_replace(' ', '_', trim($match[1])));
+                $mVal = trim($match[2]);
+                if ($mKey === 'pelindung' && (empty($pelindung) || $pelindung === '-') && $mVal !== '-' && !empty($mVal)) {
+                    $pelindung = $mVal;
+                }
+                if ($mKey === 'maps' && empty($mapsUrl) && !empty($mVal)) {
+                    if (preg_match('/src=["\']([^"\']+)["\']/i', $mVal, $mSrc)) {
+                        $mapsUrl = $mSrc[1];
+                    } elseif (str_starts_with($mVal, 'http')) {
+                        $mapsUrl = $mVal;
+                    }
+                }
+            }
+            $remainingNote = preg_replace('/(Pelindung|Tipe\s*lama|Koordinat|Maps)\s*:\s*([^:]+?)(?=(?:Pelindung|Tipe\s*lama|Koordinat|Maps)\s*:|$)/is', '', $prefix);
+            $extraCatatan = trim($remainingNote);
+        } else {
+            $extraCatatan = trim($prefix);
+        }
+    } elseif (!empty($rawKeterangan)) {
+        $extraCatatan = trim($rawKeterangan);
+    }
+
+    // Auto-detect patron saint from kapela name if still blank or '-'
+    if (empty($pelindung) || $pelindung === '-') {
+        if (preg_match('/^(Santo\s+[^–—\-]+|Santa\s+[^–—\-]+|St\.\s+[^–—\-]+|Bintang\s+[^–—\-]+)/i', $nama, $mPatron)) {
+            $pelindung = trim($mPatron[1]);
+        }
+    }
+
     $backRoute = '/profil-kapela';
     $backLabel = 'Kembali ke Daftar Stasi & Kapela';
+
+    // Editorial narrative article formatter
+    $formatSejarah = function($rawText) {
+        if (empty($rawText)) return '';
+
+        // Strip repeated scan header artifacts
+        $clean = preg_replace('/\n+\s*Profil Kapela\s*\n+/i', "\n\n", $rawText);
+        $clean = str_replace(["\r\n", "\r"], "\n", $clean);
+
+        // Split paragraphs by 2 or more newlines
+        $blocks = preg_split('/\n{2,}/', trim($clean));
+        $html = '';
+
+        foreach ($blocks as $idx => $block) {
+            $block = trim($block);
+            if (empty($block)) continue;
+
+            // Section headings (e.g. KUTIPAN DARI KRONIK...)
+            if (preg_match('/^KUTIPAN DARI KRONIK/i', $block) || (preg_match('/^[A-Z\s]{6,}:?$/', $block) && strlen($block) < 60)) {
+                $html .= '<h4 class="article-subheading mt-5 mb-3 fw-bold border-bottom pb-2 d-flex align-items-center gap-2" style="font-size: 1.15rem; color: #0f172a;"><i class="fas fa-scroll" style="color: #d97706;"></i> ' . e($block) . '</h4>';
+                continue;
+            }
+
+            // Timeline / chronicle diary entry (e.g. "21-3-1953: ...")
+            if (preg_match('/^(\d{1,2}-\d{1,2}-\d{4})\s*:\s*(.*)/s', $block, $m)) {
+                $date = $m[1];
+                $content = trim(preg_replace('/\s*\n\s*/', ' ', $m[2]));
+                $html .= '<div class="kronik-entry p-3 my-3 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid var(--primary-teal, #00897b); padding: 16px 20px; border-radius: 10px; margin: 18px 0; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">';
+                $html .= '<span class="badge mb-2 font-monospace px-2.5 py-1" style="background: #004d40; color: #ffffff; font-size: 0.8rem; border-radius: 6px;"><i class="far fa-calendar-alt me-1"></i> ' . e($date) . '</span>';
+                $html .= '<p class="mb-0 leading-relaxed" style="font-size: 0.95rem; line-height: 1.8; color: #334155; text-align: justify;">' . e($content) . '</p>';
+                $html .= '</div>';
+                continue;
+            }
+
+            // Syllogism quote / theological dialogue box
+            if (preg_match('/^(Mayor|Minor|Ergo)\s*:/i', $block)) {
+                $html .= '<div class="syllogism-box my-3 p-3 rounded-3" style="background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid #f59e0b; padding: 14px 18px; border-radius: 10px; color: #78350f; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.92rem; line-height: 1.7; margin: 18px 0;">' . nl2br(e($block)) . '</div>';
+                continue;
+            }
+
+            // Smooth flow across single-line manual breaks
+            $flowText = preg_replace('/\s*\n\s*/', ' ', $block);
+
+            if ($idx === 0) {
+                $html .= '<p class="article-lead" style="font-size: 1.05rem; line-height: 1.9; color: #1e293b; margin-bottom: 1.35rem; text-align: justify; font-weight: 500;">' . e($flowText) . '</p>';
+            } else {
+                $html .= '<p class="article-p" style="font-size: 0.98rem; line-height: 1.85; color: #334155; margin-bottom: 1.25rem; text-align: justify;">' . e($flowText) . '</p>';
+            }
+        }
+
+        return $html;
+    };
 @endphp
 
 @section('title', $nama . ' - ' . ($globalNamaParoki ?? 'SIPAROKI'))
@@ -50,6 +148,54 @@
 
 @section('content')
 <style>
+.article-lead {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: #1e293b;
+    margin-bottom: 1.35rem;
+    text-align: justify;
+    font-weight: 500;
+}
+.article-p {
+    font-size: 0.98rem;
+    line-height: 1.85;
+    color: #334155;
+    margin-bottom: 1.25rem;
+    text-align: justify;
+}
+.article-subheading {
+    margin-top: 2.2rem;
+    margin-bottom: 1rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.kronik-entry {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid var(--primary-teal, #00897b);
+    padding: 16px 20px;
+    border-radius: 10px;
+    margin: 18px 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+.syllogism-box {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 4px solid #f59e0b;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: #78350f;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    margin: 18px 0;
+}
 @media (max-width: 768px) {
     .detail-content {
         padding: 20px 16px !important;
@@ -60,6 +206,9 @@
     }
     .sidebar-widget {
         padding: 18px 16px !important;
+    }
+    .article-lead, .article-p {
+        text-align: left !important;
     }
 }
 </style>
@@ -175,9 +324,9 @@
                             <i class="fas fa-book-bookmark" style="color: var(--primary-teal, #00897b);"></i> Sejarah &amp; Profil Perkembangan
                         </h4>
                         
-                        @if(!empty($kapela->sejarah))
-                            <div style="text-align: justify; margin-bottom: 24px;">
-                                {!! nl2br(e($kapela->sejarah)) !!}
+                        @if(!empty($resolvedSejarah))
+                            <div class="article-body-content" style="margin-bottom: 24px;">
+                                {!! $formatSejarah($resolvedSejarah) !!}
                             </div>
                         @else
                             <p class="text-muted" style="font-style: italic; margin-bottom: 24px;">
@@ -252,12 +401,14 @@
                         </div>
 
                         <!-- Catatan Tambahan -->
-                        @if(!empty($kapela->keterangan))
+                        @if(!empty($extraCatatan))
                             <div style="background: #f0fdfa; border: 1px solid #ccfbf1; border-radius: 12px; padding: 16px 20px; color: #134e4a; margin-top: 20px;">
-                                <span style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #0f766e; display: block; margin-bottom: 4px;">
+                                <span style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #0f766e; display: block; margin-bottom: 6px;">
                                     <i class="fas fa-circle-info me-1"></i> Informasi Tambahan:
                                 </span>
-                                <p style="font-size: 0.92rem; color: #334155; margin: 0; line-height: 1.6;">{{ $kapela->keterangan }}</p>
+                                <div style="font-size: 0.92rem; color: #334155; margin: 0; line-height: 1.6;">
+                                    {!! nl2br(e($extraCatatan)) !!}
+                                </div>
                             </div>
                         @endif
 

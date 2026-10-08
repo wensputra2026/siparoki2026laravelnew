@@ -17,22 +17,23 @@
 .hero-quote-item { display: inline-flex; align-items: center; gap: 8px; font-size: .92rem; color: #f1f5f9; }
 @keyframes heroQuoteScroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 .counter-section { padding: 40px 20px 20px; }
-.counter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1100px; margin: 0 auto; background: #ffffff; border: 1px solid #eef2f6; border-radius: 20px; padding: 26px 32px; box-shadow: 0 10px 35px rgba(0,0,0,0.05); }
+.counter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1140px; width: 100%; margin: 0 auto; background: #ffffff; border: 1px solid #eef2f6; border-radius: 20px; padding: 26px 32px; box-shadow: 0 10px 35px rgba(0,0,0,0.05); }
 [data-theme="dark"] .counter-grid { background: #101d31; border-color: #263a55; }
-.counter-card { display: flex; align-items: center; gap: 16px; padding: 6px; }
+.counter-card { display: flex; align-items: center; gap: 16px; padding: 6px; min-width: 0; }
 .cc-icon { width: 52px; height: 52px; border-radius: 12px; background: rgba(0, 137, 123, 0.1); color: var(--primary-teal, #00897b); display: flex; align-items: center; justify-content: center; font-size: 1.35rem; flex-shrink: 0; }
+.cc-content { min-width: 0; }
 .cc-content h3 { font-size: 1.65rem; font-weight: 800; color: #0f172a; line-height: 1.1; margin: 0; }
 [data-theme="dark"] .cc-content h3 { color: #fff; }
-.cc-content p { font-size: 0.85rem; color: #64748b; font-weight: 500; margin: 4px 0 0; }
+.cc-content p { font-size: 0.85rem; color: #64748b; font-weight: 500; margin: 4px 0 0; white-space: normal; }
 .sambutan-pastor-section { background: transparent; padding: 50px 20px 70px; }
 [data-theme="dark"] .sambutan-pastor-section { background: #090e1a; }
-.sambutan-pastor-card { display: grid; grid-template-columns: 340px 1fr; max-width: 1100px; margin: 0 auto; background: #ffffff; border: 1px solid #eef2f6; border-radius: 24px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.06); }
+.sambutan-pastor-card { display: grid; grid-template-columns: clamp(280px, 32vw, 360px) 1fr; max-width: 1140px; width: 100%; margin: 0 auto; background: #ffffff; border: 1px solid #eef2f6; border-radius: 24px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.06); }
 [data-theme="dark"] .sambutan-pastor-card { background: #101d31; border-color: #263a55; }
 .sambutan-pastor-photo { position: relative; background: #ff7a00; display: flex; align-items: flex-end; justify-content: center; min-height: 320px; overflow: hidden; }
 .sambutan-pastor-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .sambutan-pastor-badge { position: absolute; top: 20px; left: 20px; z-index: 5; background: rgba(0, 0, 0, 0.28); backdrop-filter: blur(4px); color: #ffffff; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; padding: 6px 16px; border-radius: 20px; }
-.sambutan-pastor-body { padding: 45px 50px; display: flex; flex-direction: column; justify-content: center; }
-.sambutan-pastor-body h3 { font-size: 2.1rem; font-weight: 800; color: #0c4a6e; margin: 0 0 6px; }
+.sambutan-pastor-body { padding: clamp(24px, 4vw, 45px) clamp(20px, 4vw, 50px); display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.sambutan-pastor-body h3 { font-size: clamp(1.4rem, 2.5vw, 2.1rem); font-weight: 800; color: #0c4a6e; margin: 0 0 6px; }
 [data-theme="dark"] .sambutan-pastor-body h3 { color: #38bdf8; }
 .sambutan-pastor-role { font-size: 0.95rem; font-weight: 700; color: var(--primary-teal, #00897b); margin-bottom: 20px; }
 .sambutan-pastor-body p { font-size: 0.96rem; line-height: 1.8; color: #475569; font-style: italic; margin-bottom: 26px; }

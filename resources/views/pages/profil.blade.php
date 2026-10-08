@@ -37,15 +37,15 @@
 <section class="content-section" style="padding: 60px 0 80px; background: #f4faf9;">
     <div class="container">
         
-        <div style="background: #ffffff; border-radius: 15px; padding: 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.06);">
+        <div style="background: #ffffff; border-radius: 20px; padding: clamp(20px, 4vw, 40px); box-shadow: 0 5px 25px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
             
             <div style="text-align: center; margin-bottom: 35px;">
                 @if(!empty($globalLogo))
-                    <div style="width: 90px; height: 90px; margin: 0 auto 18px; border-radius: 50%; background: #f8fafc; border: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px;">
+                    <div style="width: 90px; height: 90px; margin: 0 auto 18px; border-radius: 50%; background: #f8fafc; border: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
                         <img src="{{ $globalLogo }}" alt="{{ $displayName }}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                     </div>
                 @endif
-                <h2 style="font-size: 1.8rem; font-weight: 700; color: #1e293b; margin-bottom: 8px;">
+                <h2 style="font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 800; color: #1e293b; margin-bottom: 8px;">
                     {{ $displayName }}
                 </h2>
                 @if($pastorName)
@@ -61,20 +61,22 @@
                 </div>
             @endif
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; border-top: 1px solid #eef2f6; padding-top: 30px;">
+            <div class="row g-3 border-top pt-4 mb-4">
                 @foreach($profileRows as $row)
                     @if(filled($row['value']))
-                        <div style="display: flex; align-items: flex-start; gap: 14px; background: #f8fafc; border-radius: 12px; padding: 16px 20px;">
-                            <div style="width: 38px; height: 38px; border-radius: 50%; background: rgba(0,137,123,0.1); color: var(--primary-teal, #00897b); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0;">
-                                <i class="{{ $row['icon'] }}"></i>
-                            </div>
-                            <div>
-                                <span style="display: block; font-size: 0.78rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">
-                                    {{ $row['label'] }}
-                                </span>
-                                <span style="font-size: 0.9rem; font-weight: 600; color: #1e293b; margin-top: 2px; display: block;">
-                                    {{ $row['value'] }}
-                                </span>
+                        <div class="col-12 col-md-6">
+                            <div style="display: flex; align-items: flex-start; gap: 14px; background: #f8fafc; border-radius: 14px; padding: 16px 20px; border: 1px solid #eef2f6; height: 100%;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0,137,123,0.1); color: var(--primary-teal, #00897b); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0;">
+                                    <i class="{{ $row['icon'] }}"></i>
+                                </div>
+                                <div style="min-width: 0; word-break: break-word;">
+                                    <span style="display: block; font-size: 0.76rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">
+                                        {{ $row['label'] }}
+                                    </span>
+                                    <span style="font-size: 0.9rem; font-weight: 600; color: #1e293b; margin-top: 2px; display: block;">
+                                        {{ $row['value'] }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     @endif

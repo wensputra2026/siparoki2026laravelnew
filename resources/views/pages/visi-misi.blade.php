@@ -26,7 +26,7 @@
         <div style="display: grid; grid-template-columns: 1fr; gap: 30px;">
             
             <!-- Visi Card -->
-            <div style="background: #ffffff; border-radius: 15px; border-left: 5px solid var(--primary-teal, #00897b); padding: 35px 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.06);">
+            <div style="background: #ffffff; border-radius: 20px; border-left: 5px solid var(--primary-teal, #00897b); padding: clamp(20px, 4vw, 35px) clamp(16px, 4vw, 40px); box-shadow: 0 5px 20px rgba(0,0,0,0.06);">
                 <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 18px;">
                     <div style="width: 46px; height: 46px; border-radius: 50%; background: rgba(0,137,123,0.1); color: var(--primary-teal, #00897b); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
                         <i class="fas fa-eye"></i>
@@ -39,7 +39,7 @@
             </div>
 
             <!-- Misi Card -->
-            <div style="background: #ffffff; border-radius: 15px; border-left: 5px solid var(--primary-orange, #ff9800); padding: 35px 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.06);">
+            <div style="background: #ffffff; border-radius: 20px; border-left: 5px solid var(--primary-orange, #ff9800); padding: clamp(20px, 4vw, 35px) clamp(16px, 4vw, 40px); box-shadow: 0 5px 20px rgba(0,0,0,0.06);">
                 <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 22px;">
                     <div style="width: 46px; height: 46px; border-radius: 50%; background: rgba(255,152,0,0.1); color: var(--primary-orange, #ff9800); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
                         <i class="fas fa-bullseye"></i>

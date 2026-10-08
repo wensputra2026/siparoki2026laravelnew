@@ -26,7 +26,7 @@
 <section class="content-section" style="padding: 60px 0 80px; background: #f4faf9;">
     <div class="container">
         
-        <div style="background: #ffffff; border-radius: 15px; padding: 35px 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.06); margin-bottom: 30px;">
+        <div style="background: #ffffff; border-radius: 20px; padding: clamp(20px, 4vw, 35px) clamp(16px, 4vw, 40px); box-shadow: 0 5px 20px rgba(0,0,0,0.06); margin-bottom: 30px;">
             <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--primary-teal, #00897b); margin-bottom: 25px; border-left: 4px solid var(--primary-orange, #ff9800); padding-left: 14px;">
                 Dewan Pastoral Paroki (DPP) & Dewan Keuangan Paroki (DKP)
             </h3>

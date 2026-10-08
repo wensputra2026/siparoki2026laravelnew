@@ -89,32 +89,18 @@
         <link rel="apple-touch-icon" href="{{ asset('images/church-logo.png') }}?v={{ $cacheBuster }}">
     @endif
 
-    <!-- SIPAROKI Theme: Bootstrap 5 + Icons + Fonts + Theme CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SIPAROKI Theme: Bootstrap 5.3 + Icons + Fonts + Unified Theme CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/siparoki-theme.css') }}?v={{ @filemtime(public_path('assets/css/siparoki-theme.css')) ?: time() }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/css/lightbox.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.4/dist/css/lightbox.min.css">
 
     <!-- Local Vendor Icons -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
-    <link rel="preload" href="/fonts/poppins/poppins-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/poppins/poppins-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/poppins/poppins-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
     @if(request()->is('/') || request()->is('kontak*') || request()->is('peta-kapela*'))
         <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
     @endif
-    @php
-        $publicViteManifest = public_path('build/manifest.json');
-        $publicViteCss = file_exists($publicViteManifest)
-            ? (json_decode(file_get_contents($publicViteManifest), true)['resources/css/app.css']['file'] ?? null)
-            : null;
-    @endphp
-    @if($publicViteCss)
-        <link rel="stylesheet" href="/build/{{ $publicViteCss }}">
-    @endif
-    <link rel="stylesheet" href="/css/portal-shell.css?v={{ @filemtime(public_path('css/portal-shell.css')) ?: time() }}">
-    <link rel="stylesheet" href="/css/siparoki-tailwind-public.css?v={{ @filemtime(public_path('css/siparoki-tailwind-public.css')) ?: time() }}">
     @php
         $rawBanner = $globalBanner 
             ?? $globalProfil->banner 
@@ -163,67 +149,34 @@
     <style>
         .page-header {
             @if(!empty($resolvedHeaderBg))
-            background: linear-gradient(135deg, rgba(0, 32, 28, 0.88) 0%, rgba(0, 68, 60, 0.82) 50%, rgba(1, 26, 20, 0.92) 100%), url('{{ $resolvedHeaderBg }}?v={{ $headerBgVersion }}') center/cover no-repeat, linear-gradient(135deg, #004d40 0%, #00796b 50%, #00332c 100%) !important;
+            background: linear-gradient(135deg, rgba(7, 31, 51, 0.92) 0%, rgba(0, 77, 64, 0.88) 50%, rgba(5, 23, 38, 0.95) 100%), url('{{ $resolvedHeaderBg }}?v={{ $headerBgVersion }}') center/cover no-repeat !important;
             @else
-            background: linear-gradient(135deg, #00382f 0%, #005f54 50%, #00261e 100%) !important;
+            background: linear-gradient(135deg, #07273b 0%, #004d40 50%, #041624 100%) !important;
             @endif
-            padding: 72px 16px 48px !important;
+            padding: clamp(48px, 7vw, 76px) 16px clamp(36px, 5vw, 54px) !important;
             color: #ffffff !important;
             text-align: center !important;
             position: relative !important;
+            border-bottom: 3px solid var(--primary-orange, #f59e0b) !important;
         }
-        .page-header h1,
-        body.public-portal .page-header h1,
-        body.public-portal main .page-header h1 {
+        .page-header h1 {
             color: #ffffff !important;
-            font-size: clamp(1.8rem, 4.5vw, 2.75rem) !important;
+            font-size: clamp(1.65rem, 4vw, 2.5rem) !important;
             font-weight: 800 !important;
-            letter-spacing: -0.02em !important;
+            letter-spacing: -0.025em !important;
             margin-bottom: 12px !important;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.75), 0 1px 3px rgba(0, 0, 0, 0.9) !important;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6) !important;
+            line-height: 1.25 !important;
         }
-        .page-header p,
-        body.public-portal .page-header p,
-        body.public-portal main .page-header p {
+        .page-header p {
             color: #f1f5f9 !important;
-            font-size: clamp(0.95rem, 2vw, 1.1rem) !important;
-            font-weight: 500 !important;
+            font-size: clamp(0.88rem, 1.8vw, 1.02rem) !important;
+            font-weight: 400 !important;
             line-height: 1.65 !important;
-            max-width: 760px !important;
-            margin: 0 auto !important;
-            opacity: 0.98 !important;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85), 0 1px 3px rgba(0, 0, 0, 0.9) !important;
-        }
-        .page-header .st-badge,
-        body.public-portal main .page-header .st-badge,
-        body.public-portal .page-header .st-badge {
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 7px !important;
-            background: rgba(255, 255, 255, 0.22) !important;
-            color: #fef08a !important;
-            border: 1px solid rgba(255, 255, 255, 0.40) !important;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
-            backdrop-filter: blur(10px) !important;
-            -webkit-backdrop-filter: blur(10px) !important;
-            font-size: 0.8rem !important;
-            font-weight: 750 !important;
-            padding: 6px 18px !important;
-            border-radius: 9999px !important;
-            margin-bottom: 14px !important;
-            letter-spacing: 0.05em !important;
-            text-transform: uppercase !important;
-        }
-        .page-header .st-badge i,
-        body.public-portal main .page-header .st-badge i {
-            color: #fef08a !important;
-            font-size: 0.85rem !important;
-        }
-        .page-header .breadcrumb-item,
-        .page-header .breadcrumb-item a {
-            color: #f8fafc !important;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6) !important;
+            max-width: 720px !important;
+            margin: 0 auto 16px !important;
+            opacity: 0.95 !important;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5) !important;
         }
     </style>
     @stack('styles')
@@ -233,50 +186,18 @@
 </head>
 <body class="public-portal">
 
-    @php
-        $topAlamat = !empty($pengaturan->alamat) ? $pengaturan->alamat : (!empty($alamat) ? $alamat : (!empty($globalProfil->alamat) ? $globalProfil->alamat : 'Benlutu, TTS, NTT'));
-        $topEmail = !empty($pengaturan->email) ? $pengaturan->email : (!empty($email) ? $email : (!empty($globalProfil->email) ? $globalProfil->email : 'info@parokibenlutu.org'));
-        $topTelepon = !empty($pengaturan->telepon) ? $pengaturan->telepon : (!empty($telepon) ? $telepon : (!empty($globalProfil->telepon) ? $globalProfil->telepon : '0812-3456-7890'));
-        $topWa = !empty($pengaturan->whatsapp) ? $pengaturan->whatsapp : (!empty($whatsapp) ? $whatsapp : (!empty($globalProfil->whatsapp) ? $globalProfil->whatsapp : $topTelepon));
-        $topWaClean = preg_replace('/[^0-9]/', '', $topWa);
-    @endphp
-
-    <!-- Top Bar Konoha Style (Hanya Tampil di Desktop/Laptop agar di Tablet & HP Header Bersih) -->
-    <div class="top-bar d-none d-lg-block">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 col-12">
-                    <div class="d-flex align-items-center justify-content-center justify-content-md-start">
-                        <span class="follow-us me-2">Follow Us:</span>
-                        <div class="social-icons">
-                            <a href="{{ $pengaturan->facebook_url ?? '#' }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                            <a href="{{ $pengaturan->instagram_url ?? '#' }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                            <a href="{{ $pengaturan->youtube_url ?? '#' }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                            <a href="https://wa.me/{{ $topWaClean }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-12 text-end d-none d-md-block">
-                    <a href="/kontak" class="text-white me-3"><i class="fas fa-map-marker-alt me-1"></i> {{ $topAlamat }}</a>
-                    <a href="mailto:{{ $topEmail }}" class="text-white me-3"><i class="fas fa-envelope me-1"></i> {{ $topEmail }}</a>
-                    <a href="tel:{{ $topTelepon }}" class="text-white"><i class="fas fa-phone me-1"></i> {{ $topTelepon }}</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg sticky-top">
+        <nav class="navbar navbar-expand-xl sticky-top">
             <div class="container">
-                <a class="navbar-brand d-inline-flex align-items-center gap-1 gap-sm-2" href="/" style="text-decoration: none;">
+                <a class="navbar-brand d-inline-flex align-items-center gap-2" href="/" style="text-decoration: none;">
                     @if(!empty($globalLogo))
-                        <img src="{{ $globalLogo }}?v={{ $cacheBuster }}" alt="Logo {{ $globalNamaParoki ?? 'Paroki' }}" style="width: 42px; height: 42px; object-fit: contain; border-radius: 50%; background: #fff; padding: 2px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); flex-shrink: 0; display: inline-block;">
+                        <img src="{{ $globalLogo }}?v={{ $cacheBuster }}" alt="Logo {{ $globalNamaParoki ?? 'Paroki' }}" style="width: 40px; height: 40px; object-fit: contain; border-radius: 50%; background: #fff; padding: 2px; box-shadow: 0 2px 6px rgba(0,0,0,0.12); border: 1.5px solid rgba(0,137,123,0.2); flex-shrink: 0; display: inline-block;">
                     @else
                         <i class="bi bi-church" style="font-size: 1.8rem; color: var(--primary-teal, #00897b); flex-shrink: 0;"></i>
                     @endif
-                    <span style="font-weight: 800; font-size: clamp(0.72rem, 3.2vw, 1.15rem); color: var(--primary-orange, #ff9800); white-space: nowrap; line-height: 1.1; letter-spacing: -0.02em;">{{ $globalNamaParoki ?? 'SIPAROKI' }}</span>
+                    <span style="font-weight: 800; font-size: clamp(0.82rem, 2.5vw, 1.15rem); color: var(--primary-orange, #ff9800); white-space: nowrap; line-height: 1; letter-spacing: -0.02em;">{{ $globalNamaParoki ?? 'SIPAROKI' }}</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigasi">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
@@ -477,28 +398,13 @@
 
     <!-- Scripts -->
     <script src="/env.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/js/lightbox.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            if (typeof lightbox !== 'undefined') {
-                lightbox.option({
-                    'resizeDuration': 200,
-                    'wrapAround': true,
-                    'albumLabel': 'Foto %1 dari %2',
-                    'fadeDuration': 250,
-                    'imageFadeDuration': 250
-                });
-            }
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/lightbox2@2.11.4/dist/js/lightbox.min.js"></script>
     @if(request()->is('/') || request()->is('kontak*') || request()->is('peta-kapela*'))
         <script src="/vendor/leaflet/leaflet.js"></script>
     @endif
-    <script src="/js/portal-shell.js?v={{ @filemtime(public_path('js/portal-shell.js')) ?: time() }}" defer></script>
     <script src="/js/siparoki-public.js?v={{ @filemtime(public_path('js/siparoki-public.js')) ?: time() }}" defer></script>
-    <script src="/js/public-layout.js?v={{ @filemtime(public_path('js/public-layout.js')) ?: time() }}" defer></script>
 
     <!-- Back to Top Floating Button -->
     <button id="backToTop" class="back-to-top" aria-label="Kembali ke atas halaman" title="Kembali ke atas">

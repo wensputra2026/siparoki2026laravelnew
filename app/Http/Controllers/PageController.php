@@ -1327,7 +1327,11 @@ class PageController extends Controller
                 ->paginate(9);
         }
 
-        return view('pages.artikel', array_merge($common, compact('artikel')));
+        $categories = Schema::hasTable('kategori_konten') ? DB::table('kategori_konten')->where(function($q) {
+            $q->where('is_deleted', 0)->orWhereNull('is_deleted');
+        })->get() : collect();
+
+        return view('pages.artikel', array_merge($common, compact('artikel', 'categories')));
     }
 
     public function artikelDetail($slug)
@@ -1521,7 +1525,11 @@ class PageController extends Controller
             ->latest('created_at')
             ->paginate(10);
 
-        return view('pages.pengumuman', array_merge($common, compact('pengumuman')));
+        $categories = Schema::hasTable('kategori_konten') ? DB::table('kategori_konten')->where(function($q) {
+            $q->where('is_deleted', 0)->orWhereNull('is_deleted');
+        })->get() : collect();
+
+        return view('pages.pengumuman', array_merge($common, compact('pengumuman', 'categories')));
     }
 
     public function pengumumanDetail($id)

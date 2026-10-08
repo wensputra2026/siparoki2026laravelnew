@@ -467,23 +467,8 @@ const resolveIcon = (icon) => {
             </div>
         </div>
 
-        <!-- Sidebar Profile Box at Bottom (Vatican Theme) -->
-        <div class="sidebar-profile p-3 shrink-0 bg-slate-50 border-t border-slate-200/80">
-            <div v-show="isSidebarOpen" class="px-1 mb-1.5 text-[10px] font-black uppercase tracking-wider text-amber-950">
-                AKUN SAYA
-            </div>
-            <div class="flex items-center gap-2.5 p-2 rounded-xl bg-white border border-slate-200 shadow-2xs">
-                <img
-                    :src="userAvatar || '/images/avatar-default.jpg'"
-                    alt="Foto Profil"
-                    class="w-8 h-8 rounded-lg object-cover border-2 border-amber-400 shrink-0"
-                    @error="(e) => { e.target.onerror = null; e.target.src = '/images/avatar-default.jpg'; }"
-                />
-                <div v-show="isSidebarOpen" class="flex-1 min-w-0">
-                    <p class="text-xs font-bold text-slate-900 truncate">{{ userName }}</p>
-                    <span class="inline-block text-[10px] font-extrabold text-amber-700 truncate">{{ activeRole }}</span>
-                </div>
-            </div>
+        <!-- Sidebar Actions at Bottom (Vatican Theme) -->
+        <div v-if="isSuperAdmin" class="sidebar-profile p-3 shrink-0 bg-slate-50 border-t border-slate-200/80">
             <!-- Tukar Pengguna Button (Desktop, hanya Super Admin) -->
             <button
                 v-if="isSuperAdmin"
@@ -491,7 +476,7 @@ const resolveIcon = (icon) => {
                 @click="showTukarPengguna = true"
                 :title="!isSidebarOpen ? 'Tukar Pengguna' : undefined"
                 :class="[
-                    'w-full flex items-center gap-2 px-3 py-2 mt-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-bold transition cursor-pointer shadow-xs border border-amber-600/30',
+                    'w-full flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-bold transition cursor-pointer shadow-xs border border-amber-600/30',
                     !isSidebarOpen ? 'justify-center' : '',
                 ]"
             >

@@ -90,74 +90,7 @@
     <div class="container">
         
         <!-- Unified Category Filter Bar -->
-        <div style="background: #ffffff; border-radius: 22px; padding: 16px 24px; box-shadow: 0 6px 25px rgba(0,0,0,0.05); margin-bottom: 32px; border: 1px solid #e2e8f0; border-top: 4px solid var(--primary-teal, #00897b);">
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: flex-start;">
-                
-                <!-- Semua Warta -->
-                <a href="/warta" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 25px; font-size: 0.84rem; font-weight: 700; text-decoration: none; transition: all 0.2s; {{ empty($activeCatText) && !request()->is('berita*') && !request()->is('artikel*') && !request()->is('pengumuman*') && !request()->is('renungan*') ? 'background: var(--primary-teal, #00897b); color: #ffffff; box-shadow: 0 4px 12px rgba(0,137,123,0.3);' : 'background: #f1f5f9; color: #334155;' }}">
-                    <i class="fa-solid fa-border-all"></i> Semua Warta
-                </a>
-
-                <!-- Berita Paroki -->
-                <a href="/berita" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 25px; font-size: 0.84rem; font-weight: 700; text-decoration: none; transition: all 0.2s; {{ request()->is('berita*') || strtolower($activeCatText) === 'berita' || strtolower($activeCatText) === 'berita paroki' ? 'background: var(--primary-teal, #00897b); color: #ffffff; box-shadow: 0 4px 12px rgba(0,137,123,0.3);' : 'background: #f1f5f9; color: #334155;' }}">
-                    <i class="fa-regular fa-newspaper"></i> Berita Paroki
-                </a>
-
-                <!-- Artikel & Opini -->
-                <a href="/artikel" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 25px; font-size: 0.84rem; font-weight: 700; text-decoration: none; transition: all 0.2s; {{ request()->is('artikel*') || strtolower($activeCatText) === 'artikel' || strtolower($activeCatText) === 'artikel rohani' ? 'background: var(--primary-teal, #00897b); color: #ffffff; box-shadow: 0 4px 12px rgba(0,137,123,0.3);' : 'background: #f1f5f9; color: #334155;' }}">
-                    <i class="fa-solid fa-book-open"></i> Artikel &amp; Opini
-                </a>
-
-                <!-- Pengumuman -->
-                <a href="/pengumuman" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 25px; font-size: 0.84rem; font-weight: 700; text-decoration: none; transition: all 0.2s; {{ request()->is('pengumuman*') || strtolower($activeCatText) === 'pengumuman' || strtolower($activeCatText) === 'pengumuman paroki' ? 'background: var(--primary-teal, #00897b); color: #ffffff; box-shadow: 0 4px 12px rgba(0,137,123,0.3);' : 'background: #f1f5f9; color: #334155;' }}">
-                    <i class="fa-solid fa-bullhorn"></i> Pengumuman
-                </a>
-
-                <!-- Renungan -->
-                <a href="/renungan" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 25px; font-size: 0.84rem; font-weight: 700; text-decoration: none; transition: all 0.2s; {{ request()->is('renungan*') || strtolower($activeCatText) === 'renungan' || strtolower($activeCatText) === 'renungan harian' ? 'background: var(--primary-teal, #00897b); color: #ffffff; box-shadow: 0 4px 12px rgba(0,137,123,0.3);' : 'background: #f1f5f9; color: #334155;' }}">
-                    <i class="fa-solid fa-hands-praying"></i> Renungan
-                </a>
-
-                <!-- Dropdown Kategori Lengkap Lainnya -->
-                @if(!empty($categories) && count($categories) > 0)
-                    @php
-                        $otherCats = collect($categories)->filter(function($k) {
-                            $n = strtolower(is_object($k) ? ($k->kategori ?? $k->nama_kategori ?? '') : (string)$k);
-                            return !in_array($n, ['berita', 'artikel', 'pengumuman', 'renungan'], true);
-                        });
-                    @endphp
-                    @if($otherCats->isNotEmpty())
-                        <div class="dropdown d-inline-block">
-                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: #e6f4f1; color: var(--primary-teal, #00897b); border: 1.5px solid rgba(0,137,123,0.25); border-radius: 25px; font-size: 0.84rem; font-weight: 700; padding: 7px 16px;">
-                                <i class="fa-solid fa-tags me-1"></i> Kategori Lainnya ({{ $otherCats->count() }})
-                            </button>
-                            <ul class="dropdown-menu shadow-lg border-0" style="max-height: 380px; overflow-y: auto; min-width: 270px; border-radius: 14px; padding: 8px;">
-                                <li class="dropdown-header text-uppercase text-xs fw-bold text-muted">Daftar Kategori Paroki</li>
-                                @foreach($otherCats as $cat)
-                                    @php
-                                        $catName = is_object($cat) ? ($cat->kategori ?? $cat->nama_kategori ?? '') : (string)$cat;
-                                        $catTotal = is_object($cat) ? ($cat->total ?? 0) : 0;
-                                        $catPretty = ucwords(strtolower(trim($catName)));
-                                        $isSelected = strtolower($activeCatText) === strtolower($catName);
-                                    @endphp
-                                    @if(!empty($catName))
-                                        <li>
-                                            <a class="dropdown-item d-flex justify-content-between align-items-center {{ $isSelected ? 'active' : '' }}" href="/warta?category={{ urlencode($catName) }}" style="border-radius: 8px; font-size: 0.85rem; padding: 7px 12px;">
-                                                <span><i class="fa-solid fa-tag me-2 text-slate-400"></i> {{ $catPretty }}</span>
-                                                @if($catTotal > 0)
-                                                    <span class="badge {{ $isSelected ? 'bg-white text-dark' : 'bg-light text-secondary' }} rounded-pill" style="font-size: 0.72rem;">{{ $catTotal }}</span>
-                                                @endif
-                                            </a>
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                @endif
-
-            </div>
-        </div>
+        @include('partials.warta-filter-tabs')
 
         @if(($berita ?? null) && $berita->total() > 0)
             
@@ -277,7 +210,7 @@
             <!-- Konoha Styled Pagination with Next & Prev -->
             <div class="mt-5 d-flex justify-content-center">
                 <nav aria-label="Warta Navigation">
-                    <ul class="pagination pagination-konoha" style="display: flex; gap: 6px; align-items: center; list-style: none; padding: 0; margin: 0;">
+                    <ul class="pagination pagination-konoha" style="display: flex; gap: 6px; align-items: center; list-style: none; padding: 0; margin: 0; flex-wrap: wrap; justify-content: center;">
                         
                         <!-- Previous Page Link -->
                         @if ($berita->onFirstPage())
@@ -340,7 +273,13 @@
                 <div style="width: 70px; height: 70px; margin: 0 auto 16px; border-radius: 50%; background: rgba(0,137,123,0.1); color: var(--primary-teal, #00897b); display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">
                     <i class="fa-solid fa-newspaper"></i>
                 </div>
-                <h4 style="font-size: 1.25rem; font-weight: 800; color: #1e293b; margin-bottom: 6px;">Belum Ada Warta untuk Kategori "{{ $activeCatText }}"</h4>
+                @if(!empty($activeCatText))
+                    <h4 style="font-size: 1.25rem; font-weight: 800; color: #1e293b; margin-bottom: 6px;">Belum Ada Warta untuk Kategori "{{ $activeCatText }}"</h4>
+                @elseif(request()->is('berita*'))
+                    <h4 style="font-size: 1.25rem; font-weight: 800; color: #1e293b; margin-bottom: 6px;">Belum Ada Berita Paroki yang Dipublikasikan</h4>
+                @else
+                    <h4 style="font-size: 1.25rem; font-weight: 800; color: #1e293b; margin-bottom: 6px;">Belum Ada Warta Paroki yang Dipublikasikan</h4>
+                @endif
                 <p style="font-size: 0.9rem; color: #64748b; max-width: 450px; margin: 0 auto 20px;">
                     Saat ini belum ada artikel atau berita yang dipublikasikan untuk kategori ini. Silakan periksa kategori warta lainnya.
                 </p>
