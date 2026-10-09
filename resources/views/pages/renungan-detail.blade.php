@@ -128,9 +128,14 @@
                 <div style="display: flex; flex-direction: column; gap: 24px;">
 
                     <!-- 1. KATA SAMBUTAN PASTOR PAROKI -->
+                    @php
+                        $pastorNameDisplay = !empty($pastor_paroki) ? $pastor_paroki : ($globalProfil->nama_pastor_paroki_aktif ?? 'Pastor Paroki');
+                        $pastorPhotoDisplay = !empty($pastor_foto) ? $pastor_foto : asset('images/avatar-default.jpg');
+                        $parokiNameDisplay = $globalNamaParoki ?? $nama_paroki ?? 'SIPAROKI';
+                    @endphp
                     <div style="background: #ffffff; padding: 24px; border-radius: 18px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid var(--primary-orange, #ff9800); text-align: center;">
-                        <div style="position: relative; width: 85px; height: 85px; margin: 0 auto 12px;">
-                            <img src="{{ asset('images/pastor-avatar.jpg') }}" alt="Pastor Paroki" style="width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-teal, #00897b); box-shadow: 0 4px 12px rgba(0,137,123,0.2);">
+                        <div style="position: relative; width: 90px; height: 90px; margin: 0 auto 12px;">
+                            <img src="{{ $pastorPhotoDisplay }}" alt="{{ $pastorNameDisplay }}" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-teal, #00897b); box-shadow: 0 4px 12px rgba(0,137,123,0.2);" onerror="this.onerror=null;this.src='{{ asset('images/avatar-default.jpg') }}';">
                             <span style="position: absolute; bottom: 0; right: 0; background: var(--primary-orange, #ff9800); color: #ffffff; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; border: 2px solid #ffffff;">
                                 <i class="fa-solid fa-cross"></i>
                             </span>
@@ -139,13 +144,13 @@
                             Pastor Paroki
                         </span>
                         <h5 style="font-size: 1.05rem; font-weight: 800; color: #0f172a; margin: 0 0 2px;">
-                            {{ !empty($pastor_paroki) ? $pastor_paroki : ($globalProfil->nama_pastor_paroki_aktif ?? 'Pastor Paroki') }}
+                            {{ $pastorNameDisplay }}
                         </h5>
                         <p style="color: #64748b; font-size: 0.8rem; margin: 0 0 12px;">
-                            Pastor Paroki St. Vinsensius a Paulo - Benlutu
+                            Pastor Paroki {{ $parokiNameDisplay }}
                         </p>
                         <p style="color: #475569; font-size: 0.85rem; font-style: italic; line-height: 1.5; margin: 0 0 14px;">
-                            "Salve, Salam Sehat dan Berkah Dalem. Selamat Datang di Website Resmi St. Vinsensius a Paulo - Benlutu."
+                            "Salve, Salam Sehat dan Berkah Dalem. Selamat Datang di Website Resmi {{ $parokiNameDisplay }}."
                         </p>
                         <a href="/sambutan" class="btn btn-sm w-100" style="background: linear-gradient(135deg, var(--primary-teal, #00897b), var(--dark-teal, #004d40)); color: #ffffff; border-radius: 20px; font-weight: 700; font-size: 0.82rem; padding: 7px 14px;">
                             Baca Selengkapnya <i class="fa-solid fa-arrow-right ms-1"></i>
