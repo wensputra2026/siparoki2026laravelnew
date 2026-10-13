@@ -88,17 +88,15 @@ class HandleInertiaRequests extends Middleware
             }
         } catch (\Throwable $e) {}
 
-        $profilParoki = null;
-        $pengaturanAplikasi = null;
-
-        try {
-            $profilParoki = Schema::hasTable('profil_paroki')
-                ? DB::table('profil_paroki')->first()
-                : null;
-            $pengaturanAplikasi = Schema::hasTable('pengaturan_aplikasi')
-                ? DB::table('pengaturan_aplikasi')->first()
-                : null;
-        } catch (\Throwable $e) {}
+        [$profilParoki, $pengaturanAplikasi] = Cache::remember('inertia_app_settings_meta_v4', 600, function () {
+            try {
+                $p = Schema::hasTable('profil_paroki') ? DB::table('profil_paroki')->first() : null;
+                $a = Schema::hasTable('pengaturan_aplikasi') ? DB::table('pengaturan_aplikasi')->first() : null;
+                return [$p, $a];
+            } catch (\Throwable $e) {
+                return [null, null];
+            }
+        });
 
         $namaParoki = $activeParoki?->nama_paroki
             ?? $profilParoki?->nama_paroki

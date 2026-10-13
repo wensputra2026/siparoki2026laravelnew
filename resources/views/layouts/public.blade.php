@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
 
     @php
-        $metaTitle = trim($__env->yieldContent('title', ($globalNamaParoki ?? 'Paroki') . ' - Sistem Informasi Paroki'));
-        $metaDescription = trim($__env->yieldContent('description', 'Website resmi ' . ($globalNamaParoki ?? 'Paroki') . ' untuk informasi jadwal perayaan Ekaristi, sakramen, warta paroki, dan sensus umat Katolik.'));
-        $metaKeywords = trim($__env->yieldContent('keywords', 'paroki, gereja katolik, jadwal misa, warta paroki, keuskupan'));
+        $metaTitle = html_entity_decode(strip_tags(trim($__env->yieldContent('title', ($globalNamaParoki ?? 'Paroki') . ' - Sistem Informasi Paroki'))), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $metaDescription = html_entity_decode(strip_tags(trim($__env->yieldContent('description', 'Website resmi ' . ($globalNamaParoki ?? 'Paroki') . ' untuk informasi jadwal perayaan Ekaristi, sakramen, warta paroki, dan sensus umat Katolik.'))), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $metaKeywords = html_entity_decode(strip_tags(trim($__env->yieldContent('keywords', 'paroki, gereja katolik, jadwal misa, warta paroki, keuskupan'))), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $metaType = trim($__env->yieldContent('og_type', 'website'));
         $metaImage = trim($__env->yieldContent('image', $globalLogo ?? ''));
         $metaImageUrl = null;

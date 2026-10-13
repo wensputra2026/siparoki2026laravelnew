@@ -200,6 +200,7 @@ const resolveIcon = (icon) => {
                             :href="getHref(item.href)"
                             :data-active="isItemActive(item.href)"
                             preserve-scroll
+                            prefetch
                             @click="isMobileOpen = false"
                             :class="[
                                 'flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 group',
@@ -254,6 +255,7 @@ const resolveIcon = (icon) => {
                                     :href="getHref(sub.href)"
                                     :data-active="isItemActive(sub.href)"
                                     preserve-scroll
+                                    prefetch
                                     @click="isMobileOpen = false"
                                     :class="[
                                         'flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 group',
@@ -391,6 +393,7 @@ const resolveIcon = (icon) => {
                         :data-active="isItemActive(item.href)"
                         :title="item.name"
                         preserve-scroll
+                        prefetch
                         :class="[
                             'flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 group',
                             isItemActive(item.href)
@@ -447,6 +450,7 @@ const resolveIcon = (icon) => {
                                 :data-active="isItemActive(sub.href)"
                                 :title="sub.name"
                                 preserve-scroll
+                                prefetch
                                 :class="[
                                     'flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 group',
                                     isItemActive(sub.href)

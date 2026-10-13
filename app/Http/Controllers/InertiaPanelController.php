@@ -1845,7 +1845,7 @@ class InertiaPanelController extends Controller
                 'has_pdf' => true,
                 'columns' => [
                     ['key' => 'judul', 'label' => 'Judul Pengumuman', 'isPrimary' => true],
-                    ['key' => 'tgl_tayang', 'label' => 'Tanggal'],
+                    ['key' => 'tanggal_mulai', 'altKey' => 'tgl_mulai', 'label' => 'Tanggal Tayang', 'isDate' => true],
                 ],
             ],
             'renungan' => [

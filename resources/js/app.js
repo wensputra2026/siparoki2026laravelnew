@@ -27,11 +27,6 @@ if (appElement && appElement.dataset.page) {
                 .use(plugin)
                 .mount(el);
         },
-        progress: {
-            delay: 100,
-            color: '#10b981',
-            includeCSS: true,
-            showSpinner: false,
-        },
+        progress: false,
     });
 }

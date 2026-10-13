@@ -52,32 +52,17 @@
                 font-family: "bootstrap-icons" !important;
             }
 
-            /* Inertia Top Running Progress Bar (No Spinner) */
-            #nprogress {
-                pointer-events: none;
-            }
-            #nprogress .bar {
-                background: linear-gradient(90deg, #10b981, #059669, #047857) !important;
-                position: fixed;
-                z-index: 99999;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 3px !important;
-                box-shadow: 0 0 10px #10b981, 0 0 5px #059669;
-            }
-            #nprogress .peg {
-                display: block;
-                position: absolute;
-                right: 0px;
-                width: 100px;
-                height: 100%;
-                box-shadow: 0 0 12px #10b981, 0 0 6px #10b981;
-                opacity: 1.0;
-                transform: rotate(3deg) translate(0px, -4px);
-            }
+            /* Inertia Running Loader Bar - Completely Hidden */
+            #nprogress,
+            #nprogress .bar,
+            #nprogress .peg,
             #nprogress .spinner {
                 display: none !important;
+                opacity: 0 !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                max-height: 0 !important;
+                pointer-events: none !important;
             }
         </style>
 

@@ -2069,13 +2069,14 @@ const openEditModal = (item) => {
         };
     }
     if (props.moduleKey === 'pengumuman') {
-        let tgl = item.tgl_tayang || item.tanggal || '';
+        let tgl = item.tanggal_mulai || item.tgl_mulai || item.tgl_tayang || item.tanggal || '';
         if (tgl && tgl.includes('T')) tgl = tgl.split('T')[0];
+        const isInactive = isInactiveStatus(item);
         formData.value = {
             id: item.id || item.id_pengumuman,
             judul: item.judul || item.judul_pengumuman || '',
             tgl_tayang: tgl,
-            status: item.status || 'Aktif',
+            status: isInactive ? 'Nonaktif' : 'Aktif',
             isi: item.isi || item.deskripsi || item.konten || '',
         };
     }
@@ -2313,6 +2314,26 @@ const toggleUserStatus = (item) => {
     if (isSelfUser(item)) return;
     router.post(`${moduleBasePath.value}/${item.id}/toggle-status`, {}, {
         preserveScroll: true,
+    });
+};
+
+const toggleItemStatus = (item) => {
+    const isInactive = isInactiveStatus(item);
+    const newStatus = isInactive ? 'Aktif' : 'Nonaktif';
+    const itemId = resolveEntityId(item);
+    const url = `${moduleBasePath.value}/${itemId}`;
+
+    router.put(url, {
+        status: newStatus,
+        _method: 'PUT',
+    }, {
+        preserveScroll: true,
+        onSuccess: () => {
+            triggerToast(`Status berhasil diubah menjadi ${newStatus}.`, 'success');
+        },
+        onError: () => {
+            triggerToast('Gagal memperbarui status data.', 'error');
+        }
     });
 };
 
@@ -3457,6 +3478,18 @@ const showKubFilter = computed(() => {
                                         ]"
                                     >
                                         <i class="fa-solid fa-toggle-on text-xs"></i>
+                                    </button>
+                                    <button
+                                        v-if="['pengumuman', 'renungan', 'kategori-konten', 'kategori_konten'].includes(moduleKey) || (columns.some(c => c.key === 'status') && moduleKey !== 'user')"
+                                        type="button"
+                                        @click="toggleItemStatus(item)"
+                                        :title="isInactiveStatus(item) ? 'Aktifkan Kembali' : 'Nonaktifkan / Arsipkan'"
+                                        :class="[
+                                            'w-7.5 h-7.5 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center transition shadow-2xs cursor-pointer',
+                                            isInactiveStatus(item) ? 'text-slate-400 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200' : 'text-emerald-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200'
+                                        ]"
+                                    >
+                                        <i :class="isInactiveStatus(item) ? 'fa-solid fa-toggle-off text-xs text-slate-400' : 'fa-solid fa-toggle-on text-xs text-emerald-600'"></i>
                                     </button>
                                     <button
                                         v-if="moduleKey === 'user' && isSuperAdmin && !isSelfUser(item)"
