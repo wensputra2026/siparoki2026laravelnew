@@ -51,7 +51,7 @@ class Kapela extends Model
 
     public function wilayahs()
     {
-        return $this->hasManyThrough(Wilayah::class, Lingkungan::class, 'kapela_id', 'id', 'id', 'wilayah_id')->distinct();
+        return $this->hasMany(Wilayah::class, 'kapela_id');
     }
 
     public function kubs()
