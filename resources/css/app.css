@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+/* SIPAROKI Theme Build v2026.10.13-1838 */
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
@@ -69,6 +71,10 @@
     --color-brand-700: #4338ca;
     --color-brand-800: #3730a3;
     --color-brand-900: #312e81;
+}
+
+.poppins-font-active {
+    font-family: 'Poppins', sans-serif !important;
 }
 
 body, html {
