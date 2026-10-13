@@ -25,10 +25,10 @@
         <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v={{ $faviconVersion }}">
         <link rel="apple-touch-icon" href="{{ $faviconUrl }}?v={{ $faviconVersion }}">
 
-        <!-- Google Fonts: Inter (BIMKAT Official Typography Spec) -->
+        <!-- Google Fonts: Poppins (Matching Frontend Typography Spec) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
 
         <!-- Bootstrap Icons (BIMKAT Official Icon System) -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -36,20 +36,24 @@
         <!-- SweetAlert2 (BIMKAT Spec) -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        <!-- Global Inter Typography & Stability Styles -->
+        <!-- Global Poppins Typography & Stability Styles -->
         <style>
             [x-cloak] { display: none !important; }
             :root {
-                --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-                --default-font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+                --font-sans: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+                --default-font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
             }
 
             body, html, .font-sans, p, h1, h2, h3, h4, h5, h6, span, a, button, input, select, textarea, div, label, td, th {
-                font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+                font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
             }
 
             .bi, [class^="bi-"], [class*=" bi-"] {
                 font-family: "bootstrap-icons" !important;
+            }
+
+            .fa, .fas, .far, .fal, .fad, .fab, .fa-solid, .fa-regular, .fa-brands, [class^="fa-"], [class*=" fa-"] {
+                font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "FontAwesome" !important;
             }
 
             /* Inertia Running Loader Bar - Completely Hidden */
