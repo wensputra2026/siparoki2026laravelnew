@@ -927,8 +927,11 @@ trait GenericModuleTrait
         if ($slug === 'pengumuman') {
             $data = $this->normalizePengumumanPayload($data, true);
         }
-        if (($slug === 'kapela' || $slug === 'stasi') && Schema::hasColumn('kapela', 'paroki_id')) {
-            $data['paroki_id'] = $this->defaultParokiIdFromProfile();
+        if ($slug === 'kapela' || $slug === 'stasi') {
+            $data = $this->normalizeKapelaPayload($data);
+            if (Schema::hasColumn('kapela', 'paroki_id')) {
+                $data['paroki_id'] = $this->defaultParokiIdFromProfile();
+            }
         }
         if ($slug === 'wilayah') {
             $this->ensureWilayahColumns();
@@ -1313,8 +1316,11 @@ trait GenericModuleTrait
         if ($slug === 'pengumuman') {
             $data = $this->normalizePengumumanPayload($data, false, $item);
         }
-        if (($slug === 'kapela' || $slug === 'stasi') && Schema::hasColumn('kapela', 'paroki_id')) {
-            $data['paroki_id'] = $this->defaultParokiIdFromProfile();
+        if ($slug === 'kapela' || $slug === 'stasi') {
+            $data = $this->normalizeKapelaPayload($data, $item);
+            if (Schema::hasColumn('kapela', 'paroki_id')) {
+                $data['paroki_id'] = $this->defaultParokiIdFromProfile();
+            }
         }
         if ($slug === 'wilayah') {
             $this->ensureWilayahColumns();
@@ -3907,6 +3913,78 @@ trait GenericModuleTrait
 
         if (empty($data['slug']) && !empty($data['judul'])) {
             $data['slug'] = Str::slug($data['judul']);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Normalisasi data Kapela / Stasi:
+     * - Sinkronisasi pelindung_kapela ke pelindung
+     * - Sinkronisasi tipe_kapela ke tipe
+     * - Sinkronisasi lokasi <-> alamat
+     * - Sinkronisasi geojson <-> geojson_area
+     * - Sinkronisasi logo <-> foto
+     * - Ekstraksi koordinat otomatis dari Maps embed/url jika koordinat masih default
+     */
+    protected function normalizeKapelaPayload(array $data, $item = null): array
+    {
+        if (!empty($data['pelindung_kapela']) && empty($data['pelindung'])) {
+            $data['pelindung'] = $data['pelindung_kapela'];
+        } elseif (!empty($data['pelindung']) && empty($data['pelindung_kapela'])) {
+            $data['pelindung_kapela'] = $data['pelindung'];
+        }
+
+        if (!empty($data['tipe_kapela']) && empty($data['tipe'])) {
+            $data['tipe'] = $data['tipe_kapela'];
+        }
+
+        if (!empty($data['alamat']) && empty($data['lokasi'])) {
+            $data['lokasi'] = $data['alamat'];
+        } elseif (!empty($data['lokasi']) && empty($data['alamat'])) {
+            $data['alamat'] = $data['lokasi'];
+        }
+
+        if (!empty($data['geojson']) && empty($data['geojson_area'])) {
+            $data['geojson_area'] = $data['geojson'];
+        } elseif (!empty($data['geojson_area']) && empty($data['geojson'])) {
+            $data['geojson'] = $data['geojson_area'];
+        }
+
+        if (!empty($data['logo']) && empty($data['foto'])) {
+            $data['foto'] = $data['logo'];
+        } elseif (!empty($data['foto']) && empty($data['logo'])) {
+            $data['logo'] = $data['foto'];
+        }
+
+        // Jika maps_url berisi iframe embed Google Maps, ekstraksi URL-nya
+        if (!empty($data['maps_url']) && preg_match('/src=["\']([^"\']+)["\']/', $data['maps_url'], $m)) {
+            $data['maps_url'] = $m[1];
+        }
+
+        // Ekstraksi koordinat otomatis dari embed URL jika ada
+        if (!empty($data['maps_url'])) {
+            if (preg_match('/!2d([0-9\.\-]+)!3d([0-9\.\-]+)/', $data['maps_url'], $matches)) {
+                $extractedLng = $matches[1];
+                $extractedLat = $matches[2];
+                if (empty($data['latitude']) || $data['latitude'] === '-9.850000') {
+                    $data['latitude'] = $extractedLat;
+                }
+                if (empty($data['longitude']) || $data['longitude'] === '124.300000') {
+                    $data['longitude'] = $extractedLng;
+                }
+            } elseif (preg_match('/[?&]q=([0-9\.\-]+),([0-9\.\-]+)/', $data['maps_url'], $matches)) {
+                if (empty($data['latitude']) || $data['latitude'] === '-9.850000') {
+                    $data['latitude'] = $matches[1];
+                }
+                if (empty($data['longitude']) || $data['longitude'] === '124.300000') {
+                    $data['longitude'] = $matches[2];
+                }
+            }
+        }
+
+        if (empty($data['slug']) && !empty($data['nama_kapela'])) {
+            $data['slug'] = Str::slug($data['nama_kapela']);
         }
 
         return $data;

@@ -527,7 +527,7 @@
                                     <i class="fas fa-circle-info me-1"></i> Informasi Tambahan:
                                 </span>
                                 <div style="font-size: 0.92rem; color: #334155; margin: 0; line-height: 1.6;">
-                                    {!! nl2br(e($extraCatatan)) !!}
+                                    {!! strip_tags($extraCatatan) !== $extraCatatan ? $extraCatatan : nl2br(e($extraCatatan)) !!}
                                 </div>
                             </div>
                         @endif

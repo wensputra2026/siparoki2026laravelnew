@@ -2047,38 +2047,80 @@ class PageController extends Controller
     public function kapelaGeojson()
     {
         $payload = Cache::remember('frontend.kapela_geojson', 600, function () {
-            $kapelas = DB::table('stasi_kapela')->get();
-            if ($kapelas->isEmpty()) {
-                $kapelas = DB::table('kapela')->get();
+            $kapelas = collect();
+            if (Schema::hasTable('kapela')) {
+                $kapelas = DB::table('kapela')
+                    ->where(function($q) {
+                        $q->where('is_deleted', 0)->orWhereNull('is_deleted');
+                    })
+                    ->get();
+            }
+            if ($kapelas->isEmpty() && Schema::hasTable('stasi_kapela')) {
+                $kapelas = DB::table('stasi_kapela')->get();
             }
 
             $features = [];
 
             foreach ($kapelas as $k) {
-                $lat = (float) ($k->latitude ?? -10.1626);
-                $lng = (float) ($k->longitude ?? 123.5796);
-                $nama = $k->nama_stasi_kapela ?? $k->nama_kapela ?? 'Gereja Paroki';
+                $lat = !empty($k->latitude) ? (float) $k->latitude : -9.8541;
+                $lng = !empty($k->longitude) ? (float) $k->longitude : 124.2872;
+                $nama = $k->nama_kapela ?? $k->nama_stasi_kapela ?? 'Gereja / Kapela';
+                $slug = $k->slug ?? Str::slug($nama);
+                $warna = $k->warna_area ?: '#0284c7';
+                $pelindung = $k->pelindung ?? $k->nama_pelindung ?? '-';
+                $tipe = $k->tipe ?? 'Kapela';
+                $alamat = $k->lokasi ?? $k->alamat ?? '-';
 
+                // Check if GeoJSON polygon exists and is valid
+                $polygonRaw = $k->geojson ?? $k->geojson_area ?? null;
+                $polygonGeometry = null;
+                if (!empty($polygonRaw) && is_string($polygonRaw)) {
+                    $decoded = json_decode(trim($polygonRaw), true);
+                    if ($decoded && isset($decoded['type'])) {
+                        if (in_array($decoded['type'], ['Polygon', 'MultiPolygon'])) {
+                            $polygonGeometry = $decoded;
+                        } elseif (isset($decoded['geometry']) && in_array($decoded['geometry']['type'] ?? '', ['Polygon', 'MultiPolygon'])) {
+                            $polygonGeometry = $decoded['geometry'];
+                        }
+                    }
+                }
+
+                $properties = [
+                    'id_stasi_kapela' => $k->id ?? $k->id_stasi_kapela ?? 1,
+                    'nama_stasi_kapela' => $nama,
+                    'kode_stasi_kapela' => $k->kode_kapela ?? $k->kode_stasi_kapela ?? 'KPL',
+                    'tipe' => $tipe,
+                    'pelindung' => $pelindung,
+                    'alamat' => $alamat,
+                    'total_kub' => $k->total_kub ?? 0,
+                    'total_kk' => $k->total_kk ?? 0,
+                    'total_umat' => $k->total_umat ?? 0,
+                    'warna_area' => $warna,
+                    'latitude' => $lat,
+                    'longitude' => $lng,
+                    'slug' => $slug,
+                    'detail_url' => url('/profil-kapela/' . $slug),
+                    'maps_url' => $k->maps_url ?? "https://maps.google.com/?q={$lat},{$lng}",
+                    'has_polygon' => $polygonGeometry !== null,
+                ];
+
+                // Jika ada poligon area, sertakan poligonnya
+                if ($polygonGeometry) {
+                    $features[] = [
+                        'type' => 'Feature',
+                        'geometry' => $polygonGeometry,
+                        'properties' => array_merge($properties, ['feature_type' => 'polygon']),
+                    ];
+                }
+
+                // Titik koordinat untuk Pin Ikon Gereja (selalu ada)
                 $features[] = [
                     'type' => 'Feature',
                     'geometry' => [
                         'type' => 'Point',
                         'coordinates' => [$lng, $lat]
                     ],
-                    'properties' => [
-                        'id_stasi_kapela' => $k->id_stasi_kapela ?? $k->id ?? 1,
-                        'nama_stasi_kapela' => $nama,
-                        'kode_stasi_kapela' => $k->kode_stasi_kapela ?? $k->kode_kapela ?? 'KPL',
-                        'tipe' => $k->tipe ?? 'Kapela',
-                        'pelindung' => $k->pelindung ?? $k->nama_pelindung ?? '-',
-                        'alamat' => $k->alamat ?? '-',
-                        'total_kub' => $k->total_kub ?? 0,
-                        'total_kk' => $k->total_kk ?? 0,
-                        'total_umat' => $k->total_umat ?? 0,
-                        'warna_area' => $k->warna_area ?? '#0284c7',
-                        'latitude' => $lat,
-                        'longitude' => $lng,
-                    ]
+                    'properties' => array_merge($properties, ['feature_type' => 'marker']),
                 ];
             }
 
