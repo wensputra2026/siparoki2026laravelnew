@@ -5914,27 +5914,18 @@ const showKubFilter = computed(() => {
                                     <p class="text-[10px] text-slate-400 mt-1">Jika dikosongkan, sistem di peta frontend akan otomatis menandai dengan Pin Ikon Gereja.</p>
                                 </div>
 
-                                <div class="md:col-span-2">
+                                <div class="md:col-span-4">
                                     <label class="block text-[11px] font-bold text-slate-700 mb-1">
-                                        <i class="fa-solid fa-circle-info text-amber-500 me-1"></i> Keterangan / Catatan Tambahan
+                                        <i class="fa-regular fa-image text-amber-500 me-1"></i> Foto Unggulan / Cover
                                     </label>
-                                    <RichTextEditor
-                                        v-model="formData.keterangan"
-                                        placeholder="Keterangan tambahan tentang stasi/kapela..."
-                                        min-height="160"
-                                    />
-                                </div>
-
-                                <div class="md:col-span-2">
-                                    <label class="block text-[11px] font-bold text-slate-700 mb-1">Foto Unggulan / Cover</label>
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-16 h-16 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                                    <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50 border border-slate-200/90">
+                                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
                                             <img
                                                 v-if="previewImage || (formData.logo && typeof formData.logo === 'string')"
                                                 :src="previewImage || getImageUrl(formData.logo)"
                                                 class="w-full h-full object-cover"
                                             />
-                                            <i v-else class="fa-solid fa-image text-slate-400 text-lg"></i>
+                                            <i v-else class="fa-solid fa-image text-slate-400 text-xl"></i>
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <input
@@ -5943,9 +5934,20 @@ const showKubFilter = computed(() => {
                                                 @change="handleFileUpload($event, 'logo')"
                                                 class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 file:cursor-pointer"
                                             />
-                                            <p class="text-[10px] text-slate-400 mt-1">Format: JPG, PNG, WEBP. Maksimal 2MB</p>
+                                            <p class="text-[10px] text-slate-400 mt-1">Format: JPG, PNG, WEBP. Maksimal 2MB (Foto gereja/stasi/kapela)</p>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="md:col-span-4">
+                                    <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                                        <i class="fa-solid fa-circle-info text-amber-500 me-1"></i> Keterangan / Catatan Tambahan
+                                    </label>
+                                    <RichTextEditor
+                                        v-model="formData.keterangan"
+                                        placeholder="Keterangan tambahan tentang stasi/kapela..."
+                                        min-height="160"
+                                    />
                                 </div>
                             </div>
                         </div>
