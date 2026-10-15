@@ -37,5 +37,4 @@ public_complete_updated.zip
 !database/siparoki.sql
 !database/data/siparoki.sql
 !database/siparoki_starter_template.sql
-
-
+.agent/

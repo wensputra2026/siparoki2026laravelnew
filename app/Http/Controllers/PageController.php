@@ -669,7 +669,26 @@ class PageController extends Controller
     public function kronik()
     {
         $common = $this->getCommonData();
-        $kronik = DB::table('kronik_paroki')->latest('tanggal_peristiwa')->paginate(10);
+        $query = DB::table('kronik_paroki');
+        if (Schema::hasColumn('kronik_paroki', 'is_deleted')) {
+            $query->where(function($q) {
+                $q->where('is_deleted', 0)->orWhereNull('is_deleted');
+            });
+        }
+        if (Schema::hasColumn('kronik_paroki', 'status_publish')) {
+            $query->where(function($q) {
+                $q->where('status_publish', 'Publish')
+                  ->orWhere('status_publish', 'published')
+                  ->orWhere('status_publish', '1')
+                  ->orWhereNull('status_publish');
+            });
+        }
+        if (Schema::hasColumn('kronik_paroki', 'tampil_frontend')) {
+            $query->where(function($q) {
+                $q->where('tampil_frontend', 1)->orWhereNull('tampil_frontend');
+            });
+        }
+        $kronik = $query->orderByDesc('tanggal_peristiwa')->orderByDesc('id_kronik')->paginate(10);
         return view('pages.kronik', array_merge($common, compact('kronik')));
     }
 
