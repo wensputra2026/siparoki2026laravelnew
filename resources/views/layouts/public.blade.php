@@ -346,11 +346,22 @@
                     <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px;">
                         Benlutu, Kec. Batu Putih, Kab. Timor Tengah Selatan, Prov. Nusa Tenggara Timur — Pusat informasi kegiatan gereja, layanan sakramen, dan data keluarga besar umat Paroki St. Vinsensius a Paulo Benlutu.
                     </p>
+                    @php
+                        $fbUrl = $pengaturan->sosial_facebook ?? $pengaturan->facebook_url ?? null;
+                        $igUrl = $pengaturan->sosial_instagram ?? $pengaturan->instagram_url ?? null;
+                        $ytUrl = $pengaturan->sosial_youtube ?? $pengaturan->youtube_url ?? null;
+                        $rawWa = $pengaturan->sosial_whatsapp ?? $pengaturan->whatsapp ?? $globalProfil->whatsapp ?? $telepon ?? '';
+                        $waNum = preg_replace('/[^0-9]/', '', (string)$rawWa);
+                        if (str_starts_with($waNum, '0')) {
+                            $waNum = '62' . substr($waNum, 1);
+                        }
+                        $waUrl = !empty($waNum) ? "https://wa.me/{$waNum}" : null;
+                    @endphp
                     <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                        <a href="{{ $fbUrl ?: '/kontak' }}" @if($fbUrl) target="_blank" rel="noopener noreferrer" @endif title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="{{ $igUrl ?: '/kontak' }}" @if($igUrl) target="_blank" rel="noopener noreferrer" @endif title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="{{ $ytUrl ?: '/video' }}" @if($ytUrl) target="_blank" rel="noopener noreferrer" @endif title="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="{{ $waUrl ?: '/kontak' }}" @if($waUrl) target="_blank" rel="noopener noreferrer" @endif title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
 

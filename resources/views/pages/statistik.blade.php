@@ -1,12 +1,45 @@
 @extends('layouts.app')
 @section('title', 'Statistik & Demografi Umat Paroki - ' . ($globalNamaParoki ?? 'St. Vinsensius a Paulo Benlutu'))
 
+@push('styles')
+<style>
+    .stat-card-kpi {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        border: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .stat-card-kpi:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+    @media (max-width: 576px) {
+        .content-section {
+            padding: 30px 0 60px !important;
+        }
+        .stat-card-kpi {
+            padding: 15px 12px !important;
+            border-radius: 16px !important;
+        }
+        .stat-card-kpi h2 {
+            font-size: 1.35rem !important;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
 <!-- Page Header / Breadcrumb Konoha Style -->
 <section class="page-header">
     <div class="container">
-        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; color: #ffffff;">Potret Keluarga Besar Umat Kita</h1>
-        <p style="font-size: 1rem; color: rgba(255,255,255,0.85); margin-bottom: 18px; max-width: 680px; margin-left: auto; margin-right: auto;">
+        <h1 style="font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 800; margin-bottom: 12px; color: #ffffff;">Potret Keluarga Besar Umat Kita</h1>
+        <p style="font-size: clamp(0.88rem, 1.8vw, 1rem); color: rgba(255,255,255,0.85); margin-bottom: 18px; max-width: 680px; margin-left: auto; margin-right: auto;">
             Mari mengenal lebih dekat keluarga besar Paroki St. Vinsensius a Paulo Benlutu melalui rangkuman data umat, wilayah pelayanan, dan kehidupan menggereja kita bersama.
         </p>
         <nav aria-label="breadcrumb">
@@ -33,7 +66,7 @@
         <div class="row g-3 mb-5">
             <!-- 1. Total Jiwa Umat -->
             <div class="col-6 col-md-4 col-xl">
-                <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid var(--primary-teal, #00897b); display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div class="stat-card-kpi" style="border-top: 4px solid var(--primary-teal, #00897b);">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;">
                             Jumlah Umat
@@ -53,7 +86,7 @@
 
             <!-- 2. Kepala Keluarga (KK) -->
             <div class="col-6 col-md-4 col-xl">
-                <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid #2563eb; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div class="stat-card-kpi" style="border-top: 4px solid #2563eb;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;">
                             Keluarga Katolik
@@ -73,7 +106,7 @@
 
             <!-- 3. Komunitas Basis (KUB) -->
             <div class="col-6 col-md-4 col-xl">
-                <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid #10b981; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div class="stat-card-kpi" style="border-top: 4px solid #10b981;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;">
                             Komunitas Basis (KUB)
@@ -93,7 +126,7 @@
 
             <!-- 4. Wilayah Rohani -->
             <div class="col-6 col-md-4 col-xl">
-                <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid #6366f1; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div class="stat-card-kpi" style="border-top: 4px solid #6366f1;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;">
                             Wilayah Pelayanan
@@ -113,7 +146,7 @@
 
             <!-- 5. Kapela & Stasi -->
             <div class="col-6 col-md-4 col-xl">
-                <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid #8b5cf6; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div class="stat-card-kpi" style="border-top: 4px solid #8b5cf6;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;">
                             Stasi &amp; Kapela
@@ -133,7 +166,7 @@
 
             <!-- 6. Imam Putra Paroki -->
             <div class="col-6 col-md-4 col-xl">
-                <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid #a855f7; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div class="stat-card-kpi" style="border-top: 4px solid #a855f7;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;" title="Pastor yang berasal dari paroki kita">
                             Imam Asal Paroki
@@ -153,7 +186,7 @@
 
             <!-- 7. Biarawan & Biarawati -->
             <div class="col-6 col-md-4 col-xl">
-                <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid #14b8a6; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div class="stat-card-kpi" style="border-top: 4px solid #14b8a6;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;" title="Putra-putri paroki yang membiara">
                             Suster, Bruder &amp; Frater

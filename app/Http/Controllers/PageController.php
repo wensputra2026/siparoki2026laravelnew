@@ -949,9 +949,10 @@ class PageController extends Controller
         if ($unassignedGender > 0) {
             $pria += $unassignedGender;
         }
-        $genderTotal = max(1, $pria + $wanita);
-        $priaPercent = (int) round(($pria / $genderTotal) * 100);
-        $wanitaPercent = 100 - $priaPercent;
+        $sumGender = $pria + $wanita;
+        $genderTotal = max(1, $sumGender);
+        $priaPercent = $sumGender > 0 ? (int) round(($pria / $genderTotal) * 100) : 0;
+        $wanitaPercent = $sumGender > 0 ? (100 - $priaPercent) : 0;
         $genderStats = [
             'pria' => $pria,
             'wanita' => $wanita,
@@ -984,12 +985,24 @@ class PageController extends Controller
             ['label' => 'Lansia', 'range' => '60 tahun ke atas', 'count' => $lansia, 'percent' => round(($lansia / max(1, $totalUmat)) * 100), 'color' => '#8b5cf6', 'textColor' => 'text-purple-600', 'icon' => 'fa-person-cane'],
         ];
 
-        // Sebaran Teritori (KUB)
+        // Sebaran Teritori (KUB) - Optimized single query to prevent N+1 queries
         $sebaranStats = [];
         if (Schema::hasTable('kub')) {
             $kubList = (clone $kubQuery)->take(8)->get();
+            $kubIds = $kubList->pluck('id')->filter()->all();
+            
+            $countsByKub = [];
+            if (!empty($kubIds)) {
+                $countsByKub = DB::table('umat')
+                    ->join('kk_katolik', 'umat.kk_id', '=', 'kk_katolik.id')
+                    ->whereIn('kk_katolik.kub_id', $kubIds)
+                    ->groupBy('kk_katolik.kub_id')
+                    ->pluck(DB::raw('count(*) as aggregate'), 'kk_katolik.kub_id')
+                    ->all();
+            }
+
             foreach ($kubList as $k) {
-                $countUmatInKub = \App\Models\Umat::whereHas('kk', fn($kkQ) => $kkQ->where('kub_id', $k->id))->count();
+                $countUmatInKub = (int) ($countsByKub[$k->id] ?? 0);
                 $sebaranStats[] = [
                     'id' => $k->id,
                     'nama' => $k->nama_kub,
@@ -1003,20 +1016,31 @@ class PageController extends Controller
         $menikahGereja = (clone $umatQuery)->whereIn('status_menikah', ['Menikah Gereja', 'Kawin', 'Menikah Katolik', 'Menikah'])->count();
         $belumMenikah = (clone $umatQuery)->whereIn('status_menikah', ['Belum Menikah', 'Belum Kawin', 'Lajang', 'Single'])->count();
         $jandaDuda = (clone $umatQuery)->whereIn('status_menikah', ['Janda', 'Duda', 'Cerai Mati', 'Cerai Hidup'])->count();
-        if ($menikahGereja === 0 && $belumMenikah === 0 && $jandaDuda === 0 && $totalUmat > 0) {
-            $menikahGereja = (int) round($totalUmat * 0.45);
-            $belumMenikah = (int) round($totalUmat * 0.48);
-            $jandaDuda = max(0, $totalUmat - ($menikahGereja + $belumMenikah));
+
+        $unassignedKawin = max(0, $totalUmat - ($menikahGereja + $belumMenikah + $jandaDuda));
+        if ($unassignedKawin > 0) {
+            $unassignedChildren = (clone $umatQuery)
+                ->where(function ($q) {
+                    $q->whereNotIn('status_menikah', ['Menikah Gereja', 'Kawin', 'Menikah Katolik', 'Menikah', 'Belum Menikah', 'Belum Kawin', 'Lajang', 'Single', 'Janda', 'Duda', 'Cerai Mati', 'Cerai Hidup'])
+                      ->orWhereNull('status_menikah');
+                })
+                ->where('hubungan_keluarga', 'like', '%Anak%')
+                ->count();
+            $belumMenikah += $unassignedChildren;
+            $menikahGereja += max(0, $unassignedKawin - $unassignedChildren);
         }
 
-        $totalKawin = $menikahGereja + $belumMenikah + $jandaDuda;
-        $divKawin = $totalKawin > 0 ? $totalKawin : max(1, $totalUmat);
+        $divKawin = max(1, $totalUmat);
+        $pMenikah = (int) round(($menikahGereja / $divKawin) * 100);
+        $pJanda = (int) round(($jandaDuda / $divKawin) * 100);
+        $pBelum = max(0, 100 - ($pMenikah + $pJanda));
 
         $statusKawinStats = [
-            ['label' => 'Menikah Katolik', 'count' => $menikahGereja, 'percent' => round(($menikahGereja / $divKawin) * 100), 'color' => '#ec4899', 'icon' => 'fa-ring'],
-            ['label' => 'Belum Menikah', 'count' => $belumMenikah, 'percent' => round(($belumMenikah / $divKawin) * 100), 'color' => '#6366f1', 'icon' => 'fa-user'],
-            ['label' => 'Janda / Duda', 'count' => $jandaDuda, 'percent' => round(($jandaDuda / $divKawin) * 100), 'color' => '#64748b', 'icon' => 'fa-heart-crack'],
+            ['label' => 'Menikah Katolik', 'count' => $menikahGereja, 'percent' => $pMenikah, 'color' => '#ec4899', 'icon' => 'fa-ring'],
+            ['label' => 'Belum Menikah', 'count' => $belumMenikah, 'percent' => $pBelum, 'color' => '#6366f1', 'icon' => 'fa-user'],
+            ['label' => 'Janda / Duda', 'count' => $jandaDuda, 'percent' => $pJanda, 'color' => '#64748b', 'icon' => 'fa-heart-crack'],
         ];
+        $totalKawin = $menikahGereja + $belumMenikah + $jandaDuda;
 
         // Data Sakramen
         $hasTglBaptis = Schema::hasColumn('umat', 'tgl_baptis');

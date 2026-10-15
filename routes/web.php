@@ -130,7 +130,9 @@ Route::get('/assets/uploads/{path}', function($path) {
     ];
     $safe = siparoki_resolve_safe_file($candidates, [public_path(), storage_path('app/public')]);
     if ($safe) {
-        return response()->file($safe);
+        return response()->file($safe, [
+            'Cache-Control' => 'public, max-age=604800, stale-while-revalidate=86400',
+        ]);
     }
     abort(404);
 })->where('path', '.*');
@@ -154,7 +156,9 @@ Route::get('/uploads/{path}', function($path) {
     ];
     $safe = siparoki_resolve_safe_file($candidates, [public_path(), storage_path('app/public')]);
     if ($safe) {
-        return response()->file($safe);
+        return response()->file($safe, [
+            'Cache-Control' => 'public, max-age=604800, stale-while-revalidate=86400',
+        ]);
     }
     abort(404);
 })->where('path', '.*');
