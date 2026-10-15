@@ -157,20 +157,27 @@
     $backLabel = 'Kembali ke Daftar Stasi & Kapela';
 
     // Editorial narrative article formatter with high typographic polish
+    // Editorial narrative article formatter with high typographic polish
     $formatSejarah = function($rawText) {
         if (empty($rawText)) return '';
 
         $clean = str_replace(["\r\n", "\r"], "\n", $rawText);
 
         // Fix words spliced by page breaks & book headers (e.g. calonParoki ... calon katolik)
-        $clean = preg_replace('/calon\s*Paroki\s+Santo\s+Vinsensius[^\n]*\d*\s*Profil\s*Kapela\s*calon/is', 'calon-calon', $clean);
+        $clean = preg_replace('/calon\s*Paroki\s+Santo\s+Vinsensius[^\n<]*\d*\s*Profil\s*Kapela\s*calon/is', 'calon-calon', $clean);
         $clean = preg_replace('/\n*\s*Paroki\s+Santo\s+Vinsensius\s+a\s+Paulo\s+Benlutu\s+\d+\s*\n*/i', "\n\n", $clean);
         $clean = preg_replace('/\n*\s*Profil\s+Kapela\s*\n*/i', "\n\n", $clean);
 
-        // Rejoin sentences broken by accidental double newlines (e.g. "Keluarga kamu, semua \n\n protestan.")
+        // If the content already contains rich HTML markup (from WYSIWYG editor like <p>, <blockquote>, <strong>, etc.)
+        if (strip_tags($clean) !== $clean) {
+            // Return rich HTML directly so tags are rendered by the browser instead of escaped as literal text
+            return $clean;
+        }
+
+        // Rejoin sentences broken by accidental double newlines in plain text
         $clean = preg_replace('/([a-z0-9\,])\n{2,}\s*([a-z])/u', '$1 $2', $clean);
 
-        // Split paragraphs by 2 or more newlines
+        // Split plain text paragraphs by 2 or more newlines
         $blocks = preg_split('/\n{2,}/', trim($clean));
         $html = '';
 
@@ -188,7 +195,7 @@
             if (preg_match('/^(\d{1,2}-\d{1,2}-\d{4})\s*:\s*(.*)/s', $block, $m)) {
                 $date = $m[1];
                 $content = trim(preg_replace('/\s*\n\s*/', ' ', $m[2]));
-                $html .= '<div class="kronik-entry p-3 my-3 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid var(--primary-teal, #00897b); padding: 16px 20px; border-radius: 12px; margin: 18px 0; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">';
+                $html .= '<div class="kronik-entry p-3 my-3 rounded-3">';
                 $html .= '<span class="badge mb-2 px-3 py-1.5" style="background: #004d40; color: #ffffff; font-size: 0.8rem; border-radius: 8px;"><i class="far fa-calendar-alt me-1"></i> ' . e($date) . '</span>';
                 $html .= '<p class="mb-0 leading-relaxed" style="font-size: 0.95rem; line-height: 1.8; color: #334155; text-align: justify;">' . e($content) . '</p>';
                 $html .= '</div>';
@@ -208,34 +215,23 @@
             $trimmedBlock = trim($block);
             if (preg_match('/^[“"\'«]/us', $trimmedBlock) || (preg_match('/“([^”]{30,})”/us', $trimmedBlock) && strlen($trimmedBlock) < 900)) {
                 $flowText = preg_replace('/\s*\n\s*/', ' ', $trimmedBlock);
-                $html .= '<div class="historical-quote my-3 p-3 rounded-3" style="background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid #f59e0b; padding: 16px 22px; border-radius: 12px; margin: 18px 0; box-shadow: 0 2px 8px rgba(245,158,11,0.05);">';
-                $html .= '<div style="display: flex; gap: 12px;">';
-                $html .= '<i class="fa-solid fa-quote-left text-amber-500" style="font-size: 1.25rem; flex-shrink: 0; margin-top: 3px;"></i>';
-                $html .= '<p class="mb-0" style="font-style: italic; color: #78350f; font-size: 0.96rem; line-height: 1.85; text-align: justify;">' . e($flowText) . '</p>';
-                $html .= '</div>';
-                $html .= '</div>';
+                $html .= '<blockquote><p>' . e($flowText) . '</p></blockquote>';
                 continue;
             }
 
             // Syllogism quote / theological dialogue box
             if (preg_match('/^(Mayor|Minor|Ergo)\s*:/i', $block)) {
-                $html .= '<div class="syllogism-box my-3 p-3 rounded-3" style="background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid #f59e0b; padding: 14px 18px; border-radius: 10px; color: #78350f; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.92rem; line-height: 1.7; margin: 18px 0;">' . nl2br(e($block)) . '</div>';
+                $html .= '<div class="syllogism-box my-3 p-3 rounded-3">' . nl2br(e($block)) . '</div>';
                 continue;
             }
 
             // Smooth flow across single-line manual breaks
             $flowText = preg_replace('/\s*\n\s*/', ' ', $block);
 
-            // Enhance quotes inside paragraphs
-            $formatQuote = function($text) {
-                $escaped = e($text);
-                return preg_replace('/(?:“|&ldquo;|&quot;|")([^”"&]{25,})(?:”|&rdquo;|&quot;|")/us', '<span class="d-block my-3 p-3 rounded-3 fst-italic" style="background: #fffbeb; border-left: 4px solid #f59e0b; color: #78350f; box-shadow: 0 1px 4px rgba(245,158,11,0.06); line-height: 1.85;"><i class="fa-solid fa-quote-left me-1 text-warning"></i> “$1” <i class="fa-solid fa-quote-right ms-1 text-warning"></i></span>', $escaped);
-            };
-
             if ($idx === 0) {
-                $html .= '<p class="article-lead" style="font-size: 1.05rem; line-height: 1.9; color: #1e293b; margin-bottom: 1.35rem; text-align: justify; font-weight: 500;">' . $formatQuote($flowText) . '</p>';
+                $html .= '<p class="article-lead">' . e($flowText) . '</p>';
             } else {
-                $html .= '<p class="article-p" style="font-size: 0.98rem; line-height: 1.85; color: #334155; margin-bottom: 1.25rem; text-align: justify;">' . $formatQuote($flowText) . '</p>';
+                $html .= '<p class="article-p">' . e($flowText) . '</p>';
             }
         }
 
@@ -249,7 +245,8 @@
 
 @section('content')
 <style>
-.article-lead {
+.article-lead,
+.article-body-content > p:first-of-type {
     font-size: 1.05rem;
     line-height: 1.9;
     color: #1e293b;
@@ -257,12 +254,55 @@
     text-align: justify;
     font-weight: 500;
 }
-.article-p {
+.article-p,
+.article-body-content p {
     font-size: 0.98rem;
     line-height: 1.85;
     color: #334155;
     margin-bottom: 1.25rem;
     text-align: justify;
+}
+.article-body-content blockquote {
+    position: relative;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 4px solid #f59e0b;
+    padding: 18px 24px 18px 48px;
+    border-radius: 14px;
+    margin: 22px 0;
+    box-shadow: 0 2px 10px rgba(245, 158, 11, 0.06);
+    font-style: italic;
+    color: #78350f;
+    line-height: 1.85;
+}
+.article-body-content blockquote::before {
+    content: "\f10d";
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", "FontAwesome";
+    font-weight: 900;
+    position: absolute;
+    left: 18px;
+    top: 18px;
+    font-size: 1.25rem;
+    color: #f59e0b;
+    opacity: 0.95;
+}
+.article-body-content blockquote p {
+    color: #78350f !important;
+    font-style: italic !important;
+    font-size: 0.96rem;
+    line-height: 1.85;
+    margin-bottom: 0.5rem;
+    text-align: justify;
+}
+.article-body-content blockquote p:last-child {
+    margin-bottom: 0;
+}
+.article-body-content strong {
+    color: #0f172a;
+    font-weight: 700;
+}
+.article-body-content em {
+    font-style: italic;
 }
 .article-subheading {
     margin-top: 2.2rem;
