@@ -75,6 +75,10 @@ Route::get('/statistik', [PageController::class, 'statistik'])->name('statistik'
 Route::get('/kontak', [PageController::class, 'kontak'])->name('kontak');
 Route::post('/kontak', [PageController::class, 'kirimPesanKontak'])->name('kontak.kirim');
 Route::get('/downloads', [PageController::class, 'downloads'])->name('downloads');
+Route::get('/unduhan', fn () => redirect()->route('downloads'));
+Route::get('/stasi', fn () => redirect()->route('profil-kapela'));
+Route::get('/pastor-paroki', fn () => redirect()->route('riwayat-pastor'));
+Route::get('/dewan-paroki', fn () => redirect()->route('direktori-dpp'));
 Route::get('/downloads/{download}/unduh', [PageController::class, 'downloadFile'])->name('downloads.file');
 Route::get('/downloads/arsip/{arsip}/unduh', [PageController::class, 'downloadArsipFile'])->name('downloads.arsip.file');
 

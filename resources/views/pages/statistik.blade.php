@@ -168,7 +168,7 @@
             <div class="col-6 col-md-4 col-xl">
                 <div class="stat-card-kpi" style="border-top: 4px solid #a855f7;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;" title="Pastor yang berasal dari paroki kita">
+                        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;">
                             Imam Asal Paroki
                         </span>
                         <div style="width: 38px; height: 38px; border-radius: 12px; background: #faf5ff; color: #9333ea; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
@@ -188,7 +188,7 @@
             <div class="col-6 col-md-4 col-xl">
                 <div class="stat-card-kpi" style="border-top: 4px solid #14b8a6;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;" title="Putra-putri paroki yang membiara">
+                        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;">
                             Suster, Bruder &amp; Frater
                         </span>
                         <div style="width: 38px; height: 38px; border-radius: 12px; background: #f0fdfa; color: #0d9488; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
@@ -463,8 +463,8 @@
                                 <tbody>
                                     @forelse($wilayahStats as $w)
                                         @php
-                                            $wUmat = $w['umat_count'] ?? 0;
-                                            $wPercent = $w['percent'] ?? round(($wUmat / max(1, $totalUmat)) * 100);
+                                            $wUmat = (int) ($w['umat_count'] ?? 0);
+                                            $wPercent = (int) ($w['percent'] ?? ($totalUmat > 0 ? round(($wUmat / $totalUmat) * 100) : 0));
                                         @endphp
                                         <tr style="border-bottom: 1px solid #f1f5f9;">
                                             <td style="padding: 12px; font-weight: 700; color: #1e293b;">
@@ -578,7 +578,7 @@
                         <i class="fa-solid fa-cross"></i> {{ $totalImam }} Imam
                     </span>
                     <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 12px; background: #f0fdfa; border: 1px solid #ccfbf1; color: #0f766e; font-size: 0.8rem; font-weight: 800;">
-                        <i class="fa-solid fa-dove"></i> {{ $totalBiarawan }} Biarawan/wati
+                        <i class="fa-solid fa-dove"></i> {{ $totalBiarawan }} Suster, Bruder &amp; Frater
                     </span>
                 </div>
             </div>

@@ -387,7 +387,7 @@
                                                 @endif
                                             </div>
                                             <div class="text-muted small mt-1 d-flex align-items-center gap-3 flex-wrap">
-                                                <span><i class="fa-solid fa-id-card me-1" style="color: #00897b;"></i> NIK: <strong class="font-monospace">{{ $umat->masked_nik ?? $nikInput }}</strong></span>
+                                                <span><i class="fa-solid fa-id-card me-1" style="color: #00897b;"></i> NIK: <strong class="font-monospace">{{ $umat->masked_nik ?? (strlen((string)$nikInput) > 8 ? substr((string)$nikInput, 0, 4) . '********' . substr((string)$nikInput, -4) : '************') }}</strong></span>
                                                 @if(!empty($umat->niu))
                                                     <span><i class="fa-solid fa-hashtag me-1 text-muted"></i> NIU: {{ $umat->niu }}</span>
                                                 @endif
