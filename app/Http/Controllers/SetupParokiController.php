@@ -207,7 +207,6 @@ class SetupParokiController extends Controller
             if ($bannerPath) {
                 $paroki->banner = $bannerPath;
             }
-        }
         } else {
             // Generate next Paroki code
             $maxId = Paroki::max('id_paroki') ?? 0;

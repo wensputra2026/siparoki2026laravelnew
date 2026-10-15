@@ -943,31 +943,45 @@ class PageController extends Controller
         $totalWilayah = $wilayahQuery->count();
 
         // Gender Statistics
-        $pria = (clone $umatQuery)->whereIn('jenis_kelamin', ['L', 'Laki-laki', 'LAKI-LAKI', 'Pria'])->count();
+        $pria = (clone $umatQuery)->whereIn('jenis_kelamin', ['L', 'Laki-laki', 'LAKI-LAKI', 'Laki-Laki', 'Pria'])->count();
         $wanita = (clone $umatQuery)->whereIn('jenis_kelamin', ['P', 'Perempuan', 'PEREMPUAN', 'Wanita'])->count();
-        if ($pria === 0 && $wanita === 0 && $totalUmat > 0) {
-            $pria = (int) round($totalUmat * 0.51);
-            $wanita = $totalUmat - $pria;
+        $unassignedGender = max(0, $totalUmat - ($pria + $wanita));
+        if ($unassignedGender > 0) {
+            $pria += $unassignedGender;
         }
         $genderTotal = max(1, $pria + $wanita);
+        $priaPercent = (int) round(($pria / $genderTotal) * 100);
+        $wanitaPercent = 100 - $priaPercent;
         $genderStats = [
             'pria' => $pria,
             'wanita' => $wanita,
             'total' => $pria + $wanita,
-            'pria_percent' => round(($pria / $genderTotal) * 100),
-            'wanita_percent' => round(($wanita / $genderTotal) * 100),
+            'pria_percent' => $priaPercent,
+            'wanita_percent' => $wanitaPercent,
         ];
 
-        // Age Groups (Piramida Usia Demografi)
-        $anak = (int) round($totalUmat * 0.22);
-        $omk = (int) round($totalUmat * 0.28);
-        $dewasa = (int) round($totalUmat * 0.38);
-        $lansia = max(0, $totalUmat - ($anak + $omk + $dewasa));
+        // Age Groups (Kelompok Usia Umat)
+        if (Schema::hasColumn('umat', 'tanggal_lahir')) {
+            $anak = (clone $umatQuery)->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) < 13')->count();
+            $omk = (clone $umatQuery)->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) BETWEEN 13 AND 25')->count();
+            $dewasa = (clone $umatQuery)->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) BETWEEN 26 AND 59')->count();
+            $lansia = (clone $umatQuery)->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) >= 60')->count();
+            $sisa = max(0, $totalUmat - ($anak + $omk + $dewasa + $lansia));
+            if ($sisa > 0) {
+                $dewasa += $sisa;
+            }
+        } else {
+            $anak = (int) round($totalUmat * 0.22);
+            $omk = (int) round($totalUmat * 0.28);
+            $dewasa = (int) round($totalUmat * 0.38);
+            $lansia = max(0, $totalUmat - ($anak + $omk + $dewasa));
+        }
+
         $usiaStats = [
-            ['label' => 'Anak-anak (0-12 Thn)', 'count' => $anak, 'percent' => round(($anak / max(1, $totalUmat)) * 100), 'color' => '#10b981', 'textColor' => 'text-emerald-600', 'icon' => 'fa-child'],
-            ['label' => 'OMK / Remaja (13-25 Thn)', 'count' => $omk, 'percent' => round(($omk / max(1, $totalUmat)) * 100), 'color' => '#0ea5e9', 'textColor' => 'text-sky-600', 'icon' => 'fa-graduation-cap'],
-            ['label' => 'Dewasa Produktif (26-59 Thn)', 'count' => $dewasa, 'percent' => round(($dewasa / max(1, $totalUmat)) * 100), 'color' => '#f59e0b', 'textColor' => 'text-amber-600', 'icon' => 'fa-person-walking'],
-            ['label' => 'Lansia Senior (60+ Thn)', 'count' => $lansia, 'percent' => round(($lansia / max(1, $totalUmat)) * 100), 'color' => '#8b5cf6', 'textColor' => 'text-purple-600', 'icon' => 'fa-person-cane'],
+            ['label' => 'Anak-anak', 'range' => '0–12 tahun', 'count' => $anak, 'percent' => round(($anak / max(1, $totalUmat)) * 100), 'color' => '#10b981', 'textColor' => 'text-emerald-600', 'icon' => 'fa-child'],
+            ['label' => 'Orang Muda (OMK)', 'range' => '13–25 tahun', 'count' => $omk, 'percent' => round(($omk / max(1, $totalUmat)) * 100), 'color' => '#0ea5e9', 'textColor' => 'text-sky-600', 'icon' => 'fa-graduation-cap'],
+            ['label' => 'Dewasa', 'range' => '26–59 tahun', 'count' => $dewasa, 'percent' => round(($dewasa / max(1, $totalUmat)) * 100), 'color' => '#f59e0b', 'textColor' => 'text-amber-600', 'icon' => 'fa-person-walking'],
+            ['label' => 'Lansia', 'range' => '60 tahun ke atas', 'count' => $lansia, 'percent' => round(($lansia / max(1, $totalUmat)) * 100), 'color' => '#8b5cf6', 'textColor' => 'text-purple-600', 'icon' => 'fa-person-cane'],
         ];
 
         // Sebaran Teritori (KUB)
@@ -989,15 +1003,19 @@ class PageController extends Controller
         $menikahGereja = (clone $umatQuery)->whereIn('status_menikah', ['Menikah Gereja', 'Kawin', 'Menikah Katolik', 'Menikah'])->count();
         $belumMenikah = (clone $umatQuery)->whereIn('status_menikah', ['Belum Menikah', 'Belum Kawin', 'Lajang', 'Single'])->count();
         $jandaDuda = (clone $umatQuery)->whereIn('status_menikah', ['Janda', 'Duda', 'Cerai Mati', 'Cerai Hidup'])->count();
-        if ($menikahGereja === 0 && $belumMenikah === 0 && $totalUmat > 0) {
+        if ($menikahGereja === 0 && $belumMenikah === 0 && $jandaDuda === 0 && $totalUmat > 0) {
             $menikahGereja = (int) round($totalUmat * 0.45);
             $belumMenikah = (int) round($totalUmat * 0.48);
             $jandaDuda = max(0, $totalUmat - ($menikahGereja + $belumMenikah));
         }
+
+        $totalKawin = $menikahGereja + $belumMenikah + $jandaDuda;
+        $divKawin = $totalKawin > 0 ? $totalKawin : max(1, $totalUmat);
+
         $statusKawinStats = [
-            ['label' => 'Menikah Katolik', 'count' => $menikahGereja, 'percent' => round(($menikahGereja / max(1, $totalUmat)) * 100), 'color' => '#ec4899'],
-            ['label' => 'Belum Menikah (Lajang)', 'count' => $belumMenikah, 'percent' => round(($belumMenikah / max(1, $totalUmat)) * 100), 'color' => '#6366f1'],
-            ['label' => 'Janda / Duda', 'count' => $jandaDuda, 'percent' => round(($jandaDuda / max(1, $totalUmat)) * 100), 'color' => '#64748b'],
+            ['label' => 'Menikah Katolik', 'count' => $menikahGereja, 'percent' => round(($menikahGereja / $divKawin) * 100), 'color' => '#ec4899', 'icon' => 'fa-ring'],
+            ['label' => 'Belum Menikah', 'count' => $belumMenikah, 'percent' => round(($belumMenikah / $divKawin) * 100), 'color' => '#6366f1', 'icon' => 'fa-user'],
+            ['label' => 'Janda / Duda', 'count' => $jandaDuda, 'percent' => round(($jandaDuda / $divKawin) * 100), 'color' => '#64748b', 'icon' => 'fa-heart-crack'],
         ];
 
         // Data Sakramen
@@ -1058,22 +1076,65 @@ class PageController extends Controller
         if (Schema::hasTable('wilayah')) {
             $wilayahs = \App\Models\Wilayah::withCount('kubs')->get();
             foreach ($wilayahs as $w) {
+                $wId = $w->id ?? $w->id_wilayah;
+
+                $wUmatCount = \App\Models\Umat::where(function($q) use ($wId) {
+                    $q->where('wilayah_id', $wId)
+                      ->orWhereHas('kk', function($kkQ) use ($wId) {
+                          $kkQ->where('wilayah_id', $wId)
+                              ->orWhereHas('kub', fn($kubQ) => $kubQ->where('wilayah_id', $wId));
+                      })
+                      ->orWhereHas('kub', fn($kubQ) => $kubQ->where('wilayah_id', $wId));
+                })->count();
+
+                $wKKCount = \App\Models\KkKatolik::where(function($q) use ($wId) {
+                    $q->where('wilayah_id', $wId)
+                      ->orWhereHas('kub', fn($kubQ) => $kubQ->where('wilayah_id', $wId));
+                })->count();
+
                 $wilayahStats[] = [
-                    'id' => $w->id ?? $w->id_wilayah,
+                    'id' => $wId,
                     'nama_wilayah' => $w->nama_wilayah,
                     'kub_count' => $w->kubs_count ?? 0,
-                    'kk_count' => (int) round($totalKK / max(1, count($wilayahs))),
-                    'umat_count' => (int) round($totalUmat / max(1, count($wilayahs))),
+                    'kk_count' => $wKKCount,
+                    'umat_count' => $wUmatCount,
                 ];
             }
+
+            // Sync total umat and total KK across wilayahs to exactly match totalUmat & totalKK
+            $sumUmatInW = array_sum(array_column($wilayahStats, 'umat_count'));
+            $diffUmat = $totalUmat - $sumUmatInW;
+            if ($diffUmat > 0 && count($wilayahStats) > 0) {
+                $wilayahStats[0]['umat_count'] += $diffUmat;
+            }
+
+            $sumKKInW = array_sum(array_column($wilayahStats, 'kk_count'));
+            $diffKK = $totalKK - $sumKKInW;
+            if ($diffKK > 0 && count($wilayahStats) > 0) {
+                $wilayahStats[0]['kk_count'] += $diffKK;
+            }
+
+            // Calculate exact percentages guaranteeing total sum is exactly 100%
+            $divUmat = max(1, $totalUmat);
+            $accumulatedPercent = 0;
+            $lastIndex = count($wilayahStats) - 1;
+            foreach ($wilayahStats as $i => &$ws) {
+                if ($i === $lastIndex) {
+                    $ws['percent'] = max(0, 100 - $accumulatedPercent);
+                } else {
+                    $ws['percent'] = (int) round(($ws['umat_count'] / $divUmat) * 100);
+                    $accumulatedPercent += $ws['percent'];
+                }
+            }
+            unset($ws);
         }
 
         // 2. Pekerjaan & Profesi Umat
         $pekerjaanStats = [
             ['nama' => 'Petani & Pekebun', 'count' => (int) round($totalUmat * 0.42), 'percentage' => 42, 'icon' => 'fa-seedling', 'color' => '#10b981'],
-            ['nama' => 'PNS / ASN & Guru', 'count' => (int) round($totalUmat * 0.18), 'percentage' => 18, 'icon' => 'fa-user-tie', 'color' => '#0ea5e9'],
-            ['nama' => 'Wiraswasta & Pedagang UMKM', 'count' => (int) round($totalUmat * 0.15), 'percentage' => 15, 'icon' => 'fa-store', 'color' => '#f59e0b'],
-            ['nama' => 'Karyawan Swasta & Buruh', 'count' => (int) round($totalUmat * 0.12), 'percentage' => 12, 'icon' => 'fa-briefcase', 'color' => '#8b5cf6'],
+            ['nama' => 'PNS, ASN & Guru', 'count' => (int) round($totalUmat * 0.18), 'percentage' => 18, 'icon' => 'fa-user-tie', 'color' => '#0ea5e9'],
+            ['nama' => 'Wiraswasta & Usaha Mandiri', 'count' => (int) round($totalUmat * 0.15), 'percentage' => 15, 'icon' => 'fa-store', 'color' => '#f59e0b'],
+            ['nama' => 'Karyawan & Pekerja Swasta', 'count' => (int) round($totalUmat * 0.12), 'percentage' => 12, 'icon' => 'fa-briefcase', 'color' => '#8b5cf6'],
             ['nama' => 'Pelajar & Mahasiswa', 'count' => (int) round($totalUmat * 0.13), 'percentage' => 13, 'icon' => 'fa-graduation-cap', 'color' => '#ec4899'],
         ];
 
@@ -1082,11 +1143,7 @@ class PageController extends Controller
             ->with(['kk', 'kub', 'wilayah', 'kapela'])
             ->whereNotNull('status_panggilan')
             ->where('status_panggilan', '!=', '')
-            ->where('status_panggilan', '!=', 'Awam')
-            ->where(function ($q) {
-                $q->where('nama_lengkap', 'not like', '%PETRONELA NAREK%')
-                  ->orWhereNull('nama_lengkap');
-            });
+            ->where('status_panggilan', '!=', 'Awam');
 
         $panggilanList = $panggilanQuery->get()->map(function ($u) {
             $sp = strtolower($u->status_panggilan ?? '');
@@ -1132,6 +1189,7 @@ class PageController extends Controller
             'totalImam',
             'totalBiarawan',
             'totalPanggilan',
+            'totalKawin',
             'genderStats',
             'usiaStats',
             'sebaranStats',

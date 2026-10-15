@@ -344,7 +344,7 @@
                 <div class="col-lg-4 col-md-6 mb-4">
                     <h5>{{ $globalNamaParoki ?? 'St. Vinsensius a Paulo - Benlutu' }}</h5>
                     <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px;">
-                        Benlutu, Kec. Batu Putih, Kab. Timor Tengah Selatan, Prov. Nusa Tenggara Timur - Media informasi, pelayanan sakramen, dan pendataan umat paroki.
+                        Benlutu, Kec. Batu Putih, Kab. Timor Tengah Selatan, Prov. Nusa Tenggara Timur — Pusat informasi kegiatan gereja, layanan sakramen, dan data keluarga besar umat Paroki St. Vinsensius a Paulo Benlutu.
                     </p>
                     <div class="social-icons">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -391,7 +391,7 @@
 
             <!-- Footer Bottom -->
             <div class="footer-bottom">
-                <p>&copy; {{ date('Y') }} {{ $globalNamaParoki ?? 'St. Vinsensius a Paulo - Benlutu' }}. All Rights Reserved.</p>
+                <p>&copy; {{ date('Y') }} Paroki St. Vinsensius a Paulo - Benlutu. Tuhan Memberkati.</p>
             </div>
         </div>
     </footer>

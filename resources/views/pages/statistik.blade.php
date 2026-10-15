@@ -5,9 +5,9 @@
 <!-- Page Header / Breadcrumb Konoha Style -->
 <section class="page-header">
     <div class="container">
-        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; color: #ffffff;">Statistik &amp; Demografi Umat</h1>
+        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; color: #ffffff;">Potret Keluarga Besar Umat Kita</h1>
         <p style="font-size: 1rem; color: rgba(255,255,255,0.85); margin-bottom: 18px; max-width: 680px; margin-left: auto; margin-right: auto;">
-            Transparansi data demografi, komposisi umat, statistik sakramen, dan sebaran wilayah pelayanan pastoral Paroki St. Vinsensius a Paulo Benlutu.
+            Mari mengenal lebih dekat keluarga besar Paroki St. Vinsensius a Paulo Benlutu melalui rangkuman data umat, wilayah pelayanan, dan kehidupan menggereja kita bersama.
         </p>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb" style="display: inline-flex; list-style: none; padding: 0; margin: 0 auto; gap: 8px; background: transparent; justify-content: center; align-items: center; flex-wrap: wrap;">
@@ -36,7 +36,7 @@
                 <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid var(--primary-teal, #00897b); display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;">
-                            Total Jiwa Umat
+                            Jumlah Umat
                         </span>
                         <div style="width: 38px; height: 38px; border-radius: 12px; background: rgba(0,137,123,0.1); color: var(--primary-teal, #00897b); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
                             <i class="fa-solid fa-users"></i>
@@ -47,9 +47,6 @@
                             {{ number_format((int) ($totalUmat ?? 0), 0, ',', '.') }}
                             <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">Jiwa</span>
                         </h2>
-                        <span style="font-size: 0.72rem; font-weight: 700; color: #059669; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">
-                            <i class="fa-solid fa-circle-check"></i> Terdata Aktif
-                        </span>
                     </div>
                 </div>
             </div>
@@ -59,7 +56,7 @@
                 <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid #2563eb; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;">
-                            Kepala Keluarga
+                            Keluarga Katolik
                         </span>
                         <div style="width: 38px; height: 38px; border-radius: 12px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
                             <i class="fa-solid fa-house-chimney-user"></i>
@@ -70,9 +67,6 @@
                             {{ number_format((int) ($totalKK ?? 0), 0, ',', '.') }}
                             <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">KK</span>
                         </h2>
-                        <span style="font-size: 0.72rem; font-weight: 700; color: #2563eb; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">
-                            <i class="fa-solid fa-file-lines"></i> Buku KK Katolik
-                        </span>
                     </div>
                 </div>
             </div>
@@ -82,7 +76,7 @@
                 <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid #10b981; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;">
-                            Komunitas KUB
+                            Komunitas Basis (KUB)
                         </span>
                         <div style="width: 38px; height: 38px; border-radius: 12px; background: #ecfdf5; color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
                             <i class="fa-solid fa-people-group"></i>
@@ -93,9 +87,6 @@
                             {{ number_format((int) ($totalKUB ?? 0), 0, ',', '.') }}
                             <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">KUB</span>
                         </h2>
-                        <span style="font-size: 0.72rem; font-weight: 700; color: #059669; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">
-                            <i class="fa-solid fa-hands-holding-child"></i> Basis Umat
-                        </span>
                     </div>
                 </div>
             </div>
@@ -105,7 +96,7 @@
                 <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid #6366f1; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;">
-                            Wilayah Rohani
+                            Wilayah Pelayanan
                         </span>
                         <div style="width: 38px; height: 38px; border-radius: 12px; background: #eef2ff; color: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
                             <i class="fa-solid fa-map-location-dot"></i>
@@ -116,9 +107,6 @@
                             {{ number_format((int) ($totalWilayah ?? 0), 0, ',', '.') }}
                             <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">Wilayah</span>
                         </h2>
-                        <span style="font-size: 0.72rem; font-weight: 700; color: #4f46e5; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">
-                            <i class="fa-solid fa-cross"></i> Lingkup Pastoral
-                        </span>
                     </div>
                 </div>
             </div>
@@ -128,7 +116,7 @@
                 <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid #8b5cf6; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;">
-                            Stasi / Kapela
+                            Stasi &amp; Kapela
                         </span>
                         <div style="width: 38px; height: 38px; border-radius: 12px; background: #f5f3ff; color: #8b5cf6; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
                             <i class="fa-solid fa-church"></i>
@@ -139,19 +127,16 @@
                             {{ number_format((int) ($totalKapela ?? 0), 0, ',', '.') }}
                             <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">Stasi</span>
                         </h2>
-                        <span style="font-size: 0.72rem; font-weight: 700; color: #7c3aed; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">
-                            <i class="fa-solid fa-place-of-worship"></i> Tempat Ibadah
-                        </span>
                     </div>
                 </div>
             </div>
 
-            <!-- 6. Imam Asal Umat -->
+            <!-- 6. Imam Putra Paroki -->
             <div class="col-6 col-md-4 col-xl">
                 <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid #a855f7; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;" title="Anggota keluarga dari umat yang ditahbiskan menjadi Imam">
-                            Imam Asal Umat
+                        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;" title="Pastor yang berasal dari paroki kita">
+                            Imam Asal Paroki
                         </span>
                         <div style="width: 38px; height: 38px; border-radius: 12px; background: #faf5ff; color: #9333ea; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
                             <i class="fa-solid fa-cross"></i>
@@ -162,19 +147,16 @@
                             {{ number_format((int) ($totalImam ?? 0), 0, ',', '.') }}
                             <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">Imam</span>
                         </h2>
-                        <span style="font-size: 0.72rem; font-weight: 700; color: #9333ea; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">
-                            <i class="fa-solid fa-hands-praying"></i> Putra Paroki
-                        </span>
                     </div>
                 </div>
             </div>
 
-            <!-- 7. Biarawan / Biarawati -->
+            <!-- 7. Biarawan & Biarawati -->
             <div class="col-6 col-md-4 col-xl">
                 <div style="background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 4px solid #14b8a6; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;" title="Anggota keluarga umat yang menjadi Suster, Bruder, Frater">
-                            Biarawan / wati
+                        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b;" title="Putra-putri paroki yang membiara">
+                            Suster, Bruder &amp; Frater
                         </span>
                         <div style="width: 38px; height: 38px; border-radius: 12px; background: #f0fdfa; color: #0d9488; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
                             <i class="fa-solid fa-dove"></i>
@@ -185,9 +167,6 @@
                             {{ number_format((int) ($totalBiarawan ?? 0), 0, ',', '.') }}
                             <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">Jiwa</span>
                         </h2>
-                        <span style="font-size: 0.72rem; font-weight: 700; color: #0d9488; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">
-                            <i class="fa-solid fa-shield-heart"></i> Suster &amp; Frater
-                        </span>
                     </div>
                 </div>
             </div>
@@ -204,10 +183,10 @@
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
                             <div>
                                 <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-teal, #00897b);">
-                                    Komposisi Gender
+                                    Umat Laki-laki &amp; Perempuan
                                 </span>
                                 <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 2px 0 0;">
-                                    Rasio Jenis Kelamin
+                                    Perbandingan jumlah umat pria dan wanita
                                 </h3>
                             </div>
                             <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(0,137,123,0.1); color: var(--primary-teal, #00897b); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
@@ -257,10 +236,10 @@
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
                             <div>
                                 <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-orange, #ff9800);">
-                                    Piramida Demografi
+                                    Rentang Usia Umat
                                 </span>
                                 <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 2px 0 0;">
-                                    Distribusi Kelompok Usia
+                                    Dari anak-anak hingga lansia di paroki kita
                                 </h3>
                             </div>
                             <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(255,152,0,0.12); color: var(--primary-orange, #ff9800); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
@@ -278,16 +257,25 @@
                     <div class="row g-2 pt-3" style="border-top: 1px solid #f1f5f9;">
                         @foreach($usiaStats as $u)
                             <div class="col-6 col-md-3">
-                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; text-align: center;">
-                                    <span style="font-size: 0.68rem; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                        <i class="fa-solid {{ $u['icon'] }} me-1" style="color: {{ $u['color'] }};"></i> {{ $u['label'] }}
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 10px; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; min-width: 0;">
+                                    <span style="font-size: 0.74rem; font-weight: 700; color: #475569; display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 4px; line-height: 1.25; word-wrap: break-word;">
+                                        <i class="fa-solid {{ $u['icon'] }}" style="color: {{ $u['color'] }}; font-size: 0.8rem;"></i>
+                                        <span>{{ $u['label'] }}</span>
                                     </span>
-                                    <div style="font-size: 1.15rem; font-weight: 900; color: #0f172a;">
+                                    <div style="font-size: 1.2rem; font-weight: 900; color: #0f172a; line-height: 1.1; margin: 2px 0;">
                                         {{ number_format($u['count']) }}
+                                        <span style="font-size: 0.68rem; font-weight: 600; color: #64748b;">Jiwa</span>
                                     </div>
-                                    <span style="font-size: 0.68rem; font-weight: 700; color: {{ $u['color'] }};">
-                                        {{ $u['percent'] }}%
-                                    </span>
+                                    <div style="margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 4px; flex-wrap: wrap;">
+                                        <span style="display: inline-block; padding: 2px 7px; border-radius: 9999px; font-size: 0.68rem; font-weight: 800; background: {{ $u['color'] }}18; color: {{ $u['color'] }}; border: 1px solid {{ $u['color'] }}33;">
+                                            {{ $u['percent'] }}%
+                                        </span>
+                                        @if(!empty($u['range']))
+                                            <span style="font-size: 0.68rem; font-weight: 600; color: #94a3b8;">
+                                                {{ $u['range'] }}
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -307,10 +295,10 @@
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
                         <div>
                             <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #0284c7;">
-                                Inisiasi &amp; Pelayanan
+                                Penerimaan Sakramen
                             </span>
                             <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 2px 0 0;">
-                                Status Penerimaan Sakramen
+                                Jumlah umat yang telah menerima sakramen gereja
                             </h3>
                         </div>
                         <div style="width: 38px; height: 38px; border-radius: 10px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
@@ -324,22 +312,30 @@
                     </div>
 
                     <!-- Sakramen Badges List -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 15px; border-top: 1px solid #f1f5f9;">
-                        <div style="display: flex; align-items: center; justify-content: space-between; background: #f0fdf4; border: 1px solid #dcfce7; border-radius: 10px; padding: 8px 12px;">
-                            <span style="font-size: 0.78rem; font-weight: 700; color: #166534;"><i class="fa-solid fa-droplet text-emerald-500 me-1"></i> Baptis</span>
-                            <strong style="font-size: 0.95rem; color: #14532d;">{{ number_format($sakramenCount['baptis'] ?? 0) }}</strong>
+                    <div class="row g-2 pt-3" style="border-top: 1px solid #f1f5f9;">
+                        <div class="col-6">
+                            <div style="display: flex; align-items: center; justify-content: space-between; background: #f0fdf4; border: 1px solid #dcfce7; border-radius: 10px; padding: 8px 12px;">
+                                <span style="font-size: 0.78rem; font-weight: 700; color: #166534;"><i class="fa-solid fa-droplet text-emerald-500 me-1"></i> Sudah Dibaptis</span>
+                                <strong style="font-size: 0.95rem; color: #14532d;">{{ number_format($sakramenCount['baptis'] ?? 0) }}</strong>
+                            </div>
                         </div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; background: #eff6ff; border: 1px solid #dbeafe; border-radius: 10px; padding: 8px 12px;">
-                            <span style="font-size: 0.78rem; font-weight: 700; color: #1e40af;"><i class="fa-solid fa-bread-slice text-blue-500 me-1"></i> Komuni 1</span>
-                            <strong style="font-size: 0.95rem; color: #1e3a8a;">{{ number_format($sakramenCount['komuni'] ?? 0) }}</strong>
+                        <div class="col-6">
+                            <div style="display: flex; align-items: center; justify-content: space-between; background: #eff6ff; border: 1px solid #dbeafe; border-radius: 10px; padding: 8px 12px;">
+                                <span style="font-size: 0.78rem; font-weight: 700; color: #1e40af;"><i class="fa-solid fa-bread-slice text-blue-500 me-1"></i> Komuni Pertama</span>
+                                <strong style="font-size: 0.95rem; color: #1e3a8a;">{{ number_format($sakramenCount['komuni'] ?? 0) }}</strong>
+                            </div>
                         </div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; background: #fefce8; border: 1px solid #fef08a; border-radius: 10px; padding: 8px 12px;">
-                            <span style="font-size: 0.78rem; font-weight: 700; color: #854d0e;"><i class="fa-solid fa-fire text-amber-500 me-1"></i> Krisma</span>
-                            <strong style="font-size: 0.95rem; color: #713f12;">{{ number_format($sakramenCount['krisma'] ?? 0) }}</strong>
+                        <div class="col-6">
+                            <div style="display: flex; align-items: center; justify-content: space-between; background: #fefce8; border: 1px solid #fef08a; border-radius: 10px; padding: 8px 12px;">
+                                <span style="font-size: 0.78rem; font-weight: 700; color: #854d0e;"><i class="fa-solid fa-fire text-amber-500 me-1"></i> Sakramen Krisma</span>
+                                <strong style="font-size: 0.95rem; color: #713f12;">{{ number_format($sakramenCount['krisma'] ?? 0) }}</strong>
+                            </div>
                         </div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; background: #fdf2f8; border: 1px solid #fce7f3; border-radius: 10px; padding: 8px 12px;">
-                            <span style="font-size: 0.78rem; font-weight: 700; color: #9d174d;"><i class="fa-solid fa-ring text-pink-500 me-1"></i> Perkawinan</span>
-                            <strong style="font-size: 0.95rem; color: #831843;">{{ number_format($sakramenCount['perkawinan'] ?? 0) }}</strong>
+                        <div class="col-6">
+                            <div style="display: flex; align-items: center; justify-content: space-between; background: #fdf2f8; border: 1px solid #fce7f3; border-radius: 10px; padding: 8px 12px;">
+                                <span style="font-size: 0.78rem; font-weight: 700; color: #9d174d;"><i class="fa-solid fa-ring text-pink-500 me-1"></i> Sakramen Perkawinan</span>
+                                <strong style="font-size: 0.95rem; color: #831843;">{{ number_format($sakramenCount['perkawinan'] ?? 0) }}</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -347,39 +343,49 @@
 
             <!-- Chart: Status Perkawinan Umat -->
             <div class="col-lg-6">
-                <div style="background: #ffffff; border-radius: 20px; padding: 28px; box-shadow: 0 5px 22px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; height: 100%;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
-                        <div>
-                            <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #d97706;">
-                                Status Keluarga
-                            </span>
-                            <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 2px 0 0;">
-                                Status Pernikahan Umat
-                            </h3>
+                <div style="background: #ffffff; border-radius: 20px; padding: 28px; box-shadow: 0 5px 22px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
+                            <div>
+                                <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #d97706;">
+                                    Status Pernikahan
+                                </span>
+                                <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 2px 0 0;">
+                                    Gambaran ikatan pernikahan umat
+                                </h3>
+                            </div>
+                            <div style="width: 38px; height: 38px; border-radius: 10px; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                                <i class="fa-solid fa-ring"></i>
+                            </div>
                         </div>
-                        <div style="width: 38px; height: 38px; border-radius: 10px; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
-                            <i class="fa-solid fa-ring"></i>
+
+                        <!-- Canvas Container -->
+                        <div style="position: relative; height: 240px; margin-bottom: 16px;">
+                            <canvas id="marriagePieChart"></canvas>
                         </div>
                     </div>
 
-                    <!-- Canvas Container -->
-                    <div style="position: relative; height: 250px; margin-bottom: 20px;">
-                        <canvas id="marriagePieChart"></canvas>
-                    </div>
-
-                    <!-- Marriage Badges List -->
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding-top: 15px; border-top: 1px solid #f1f5f9;">
+                    <!-- Marriage Badges List (Fully Responsive) -->
+                    <div class="row g-2 pt-3" style="border-top: 1px solid #f1f5f9;">
                         @foreach($statusKawinStats as $m)
-                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px 10px; text-align: center;">
-                                <span style="font-size: 0.68rem; font-weight: 700; color: #64748b; display: block; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    {{ $m['label'] }}
-                                </span>
-                                <div style="font-size: 1.1rem; font-weight: 900; color: #0f172a;">
-                                    {{ number_format($m['count']) }}
+                            <div class="col-4 col-sm-4">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 6px; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; min-width: 0;">
+                                    <span style="font-size: 0.72rem; font-weight: 700; color: #475569; display: block; margin-bottom: 3px; line-height: 1.25; word-wrap: break-word; overflow-wrap: break-word;">
+                                        @if(!empty($m['icon']))
+                                            <i class="fa-solid {{ $m['icon'] }} me-1" style="color: {{ $m['color'] }}; font-size: 0.7rem;"></i>
+                                        @endif
+                                        {{ $m['label'] }}
+                                    </span>
+                                    <div style="font-size: 1.2rem; font-weight: 900; color: #0f172a; line-height: 1.1; margin: 2px 0;">
+                                        {{ number_format($m['count']) }}
+                                        <span style="font-size: 0.68rem; font-weight: 600; color: #64748b;">Jiwa</span>
+                                    </div>
+                                    <div style="margin-top: 3px;">
+                                        <span style="display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 0.68rem; font-weight: 800; background: {{ $m['color'] }}18; color: {{ $m['color'] }}; border: 1px solid {{ $m['color'] }}33;">
+                                            {{ $m['percent'] }}%
+                                        </span>
+                                    </div>
                                 </div>
-                                <span style="font-size: 0.68rem; font-weight: 700; color: {{ $m['color'] }};">
-                                    {{ $m['percent'] }}%
-                                </span>
                             </div>
                         @endforeach
                     </div>
@@ -399,10 +405,10 @@
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
                             <div>
                                 <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #4f46e5;">
-                                    Struktur Wilayah
+                                    Sebaran Umat per Wilayah
                                 </span>
                                 <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 2px 0 0;">
-                                    Sebaran Wilayah Rohani &amp; Lingkungan
+                                    Data KUB, keluarga, dan jumlah umat di tiap wilayah
                                 </h3>
                             </div>
                             <div style="width: 38px; height: 38px; border-radius: 10px; background: #eef2ff; color: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
@@ -425,7 +431,7 @@
                                     @forelse($wilayahStats as $w)
                                         @php
                                             $wUmat = $w['umat_count'] ?? 0;
-                                            $wPercent = round(($wUmat / max(1, $totalUmat)) * 100);
+                                            $wPercent = $w['percent'] ?? round(($wUmat / max(1, $totalUmat)) * 100);
                                         @endphp
                                         <tr style="border-bottom: 1px solid #f1f5f9;">
                                             <td style="padding: 12px; font-weight: 700; color: #1e293b;">
@@ -477,10 +483,10 @@
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
                             <div>
                                 <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #0284c7;">
-                                    Sosial Ekonomi
+                                    Pekerjaan &amp; Keseharian Umat
                                 </span>
                                 <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 2px 0 0;">
-                                    Distribusi Profesi &amp; Pekerjaan
+                                    Berbagai bidang karya dan mata pencaharian umat sehari-hari
                                 </h3>
                             </div>
                             <div style="width: 38px; height: 38px; border-radius: 10px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
@@ -510,7 +516,7 @@
                     </div>
 
                     <div style="padding-top: 14px; border-top: 1px solid #f1f5f9; font-size: 0.75rem; color: #64748b; margin-top: 16px; display: flex; align-items: center; justify-content: space-between;">
-                        <span><i class="fa-solid fa-chart-pie me-1"></i> Data Sensus Sosial Paroki</span>
+                        <span><i class="fa-solid fa-chart-pie me-1"></i> Data Pekerjaan Umat Paroki</span>
                         <span style="font-weight: 700; color: #0284c7;">5 Sektor Utama</span>
                     </div>
                 </div>
@@ -525,13 +531,13 @@
             <div style="display: flex; flex-direction: column; md:flex-row; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 26px; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9;">
                 <div>
                     <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; background: #faf5ff; color: #9333ea; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; border: 1px solid #f3e8ff; margin-bottom: 8px;">
-                        <i class="fa-solid fa-cross"></i> Buah Iman Keluarga Umat
+                        <i class="fa-solid fa-cross"></i> Panggilan Hidup Membiara &amp; Imamat
                     </span>
                     <h3 style="font-size: 1.35rem; font-weight: 900; color: #0f172a; margin: 0 0 6px;">
-                        Panggilan Hidup Bakti (Imam, Biarawan &amp; Biarawati dari Keluarga Umat)
+                        Putra-Putri Paroki dalam Pelayanan Gereja
                     </h3>
                     <p style="font-size: 0.85rem; color: #64748b; margin: 0; max-width: 720px; line-height: 1.5;">
-                        Data putra-putri dari keluarga-keluarga umat di paroki yang mempersembahkan diri bagi Allah dan Gereja dalam Imamat Suci serta Hidup Membiara.
+                        Putra dan putri terbaik dari keluarga umat Paroki Benlutu yang mempersembahkan hidupnya untuk melayani Tuhan sebagai Pastor, Suster, Bruder, dan Frater.
                     </p>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
@@ -556,8 +562,8 @@
                                     <i class="fa-solid fa-cross"></i>
                                 </div>
                                 <div>
-                                    <h4 style="font-size: 1rem; font-weight: 800; color: #0f172a; margin: 0;">Imam / Pastor dari Keluarga Umat</h4>
-                                    <span style="font-size: 0.72rem; color: #6b21a8; font-weight: 600;">Putra paroki yang telah ditahbiskan menjadi Imam</span>
+                                    <h4 style="font-size: 1rem; font-weight: 800; color: #0f172a; margin: 0;">Imam / Pastor Asal Paroki</h4>
+                                    <span style="font-size: 0.72rem; color: #6b21a8; font-weight: 600;">Pastor yang berasal dari keluarga umat paroki kita</span>
                                 </div>
                             </div>
                             <span style="background: #ede9fe; color: #581c87; font-weight: 800; font-size: 0.75rem; padding: 4px 10px; border-radius: 8px;">
@@ -579,12 +585,12 @@
                                         </div>
                                         <div style="min-width: 0;">
                                             <div style="font-weight: 800; color: #0f172a; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                                {{ $im['nama_lengkap'] }}
+                                                {{ $im['status_panggilan'] ?? 'Imam / Pastor' }}
                                             </div>
                                             <div style="font-size: 0.75rem; font-weight: 700; color: #7e22ce; margin-top: 2px;">
                                                 {{ $im['nama_ordo_kongregasi'] ?? 'Keuskupan / Ordo' }}
                                                 @if(!empty($im['tempat_tugas_biara']))
-                                                    <span style="font-weight: 500; color: #64748b;">• {{ $im['tempat_tugas_biara'] }}</span>
+                                                     <span style="font-weight: 500; color: #64748b;">• {{ $im['tempat_tugas_biara'] }}</span>
                                                 @endif
                                             </div>
                                             <div style="font-size: 0.72rem; color: #64748b; margin-top: 2px; display: flex; align-items: center; gap: 4px;">
@@ -594,15 +600,21 @@
                                         </div>
                                     </div>
                                     <div style="text-align: right; flex-shrink: 0;">
-                                        <span style="background: #f3e8ff; color: #6b21a8; font-weight: 800; font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; display: inline-block;">
-                                            {{ $im['status_panggilan'] ?? 'Imam' }}
-                                        </span>
+                                        @if(!empty($im['tahap_panggilan']))
+                                            <span style="background: #f3e8ff; color: #6b21a8; font-weight: 800; font-size: 0.72rem; padding: 4px 10px; border-radius: 6px; display: inline-block;">
+                                                {{ $im['tahap_panggilan'] }}
+                                            </span>
+                                        @else
+                                            <span style="background: #f3e8ff; color: #6b21a8; font-weight: 800; font-size: 0.72rem; padding: 4px 10px; border-radius: 6px; display: inline-block;">
+                                                Imam
+                                            </span>
+                                        @endif
                                     </div>
                                 </div>
                             @empty
                                 <div style="text-align: center; padding: 24px 16px; background: #ffffff; border-radius: 14px; border: 1px dashed #e9d5ff; color: #94a3b8; font-size: 0.8rem;">
                                     <i class="fa-solid fa-cross" style="font-size: 1.5rem; color: #d8b4fe; margin-bottom: 8px; display: block;"></i>
-                                    Belum ada data anggota keluarga yang terdaftar sebagai Imam.
+                                    Belum ada data imam asal paroki yang tercatat saat ini. Mari kita doakan bersama agar tumbuh benih-benih panggilan imamat dari keluarga-keluarga di paroki kita.
                                 </div>
                             @endforelse
                         </div>
@@ -619,7 +631,7 @@
                                 </div>
                                 <div>
                                     <h4 style="font-size: 1rem; font-weight: 800; color: #0f172a; margin: 0;">Biarawan, Biarawati &amp; Frater</h4>
-                                    <span style="font-size: 0.72rem; color: #0f766e; font-weight: 600;">Suster, Bruder, Frater &amp; Novis asal keluarga umat</span>
+                                    <span style="font-size: 0.72rem; color: #0f766e; font-weight: 600;">Suster, Bruder, Frater, dan Novis dari keluarga umat kita</span>
                                 </div>
                             </div>
                             <span style="background: #ccfbf1; color: #115e59; font-weight: 800; font-size: 0.75rem; padding: 4px 10px; border-radius: 8px;">
@@ -634,14 +646,14 @@
                                         <div style="width: 46px; height: 46px; border-radius: 12px; background: #e6fffa; border: 1px solid #99f6e4; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
                                             <img
                                                 src="{{ !empty($b['foto']) ? asset($b['foto']) : asset('images/avatar-default.jpg') }}"
-                                                alt="{{ $b['nama_lengkap'] }}"
+                                                alt="{{ $b['status_panggilan'] ?? 'Biarawan/ti' }}"
                                                 style="width: 100%; height: 100%; object-fit: cover;"
                                                 onerror="this.src='{{ asset('images/perempuan.jpg') }}'"
                                             />
                                         </div>
                                         <div style="min-width: 0;">
                                             <div style="font-weight: 800; color: #0f172a; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                                {{ $b['nama_lengkap'] }}
+                                                {{ $b['status_panggilan'] ?? 'Biarawan / Biarawati' }}
                                             </div>
                                             <div style="font-size: 0.75rem; font-weight: 700; color: #0f766e; margin-top: 2px;">
                                                 {{ $b['nama_ordo_kongregasi'] ?? 'Kongregasi / Tarekat' }}
@@ -656,20 +668,21 @@
                                         </div>
                                     </div>
                                     <div style="text-align: right; flex-shrink: 0;">
-                                        <span style="background: #ccfbf1; color: #115e59; font-weight: 800; font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; display: inline-block;">
-                                            {{ $b['status_panggilan'] ?? 'Biarawan/ti' }}
-                                        </span>
                                         @if(!empty($b['tahap_panggilan']))
-                                            <div style="font-size: 0.65rem; color: #64748b; font-weight: 600; margin-top: 2px;">
+                                            <span style="background: #ccfbf1; color: #115e59; font-weight: 800; font-size: 0.72rem; padding: 4px 10px; border-radius: 6px; display: inline-block;">
                                                 {{ $b['tahap_panggilan'] }}
-                                            </div>
+                                            </span>
+                                        @else
+                                            <span style="background: #ccfbf1; color: #115e59; font-weight: 800; font-size: 0.72rem; padding: 4px 10px; border-radius: 6px; display: inline-block;">
+                                                Hidup Bakti
+                                            </span>
                                         @endif
                                     </div>
                                 </div>
                             @empty
                                 <div style="text-align: center; padding: 24px 16px; background: #ffffff; border-radius: 14px; border: 1px dashed #99f6e4; color: #94a3b8; font-size: 0.8rem;">
                                     <i class="fa-solid fa-hands-praying" style="font-size: 1.5rem; color: #5eead4; margin-bottom: 8px; display: block;"></i>
-                                    Belum ada data anggota keluarga yang terdaftar sebagai Biarawan/wati.
+                                    Belum ada data suster, bruder, atau frater asal paroki yang tercatat saat ini. Semoga Tuhan senantiasa menggerakkan hati orang muda kita untuk menjawab panggilan-Nya.
                                 </div>
                             @endforelse
                         </div>
@@ -686,10 +699,10 @@
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;">
                 <div>
                     <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-teal, #00897b);">
-                        Sebaran Teritori Pastoral
+                        Data Umat di Tiap KUB
                     </span>
                     <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 2px 0 0;">
-                        Sebaran Jumlah Umat per Komunitas Basis (KUB)
+                        Rincian jumlah umat di masing-masing Komunitas Basis
                     </h3>
                 </div>
                 <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(0,137,123,0.1); color: var(--primary-teal, #00897b); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
@@ -798,7 +811,7 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctxSakramen, {
             type: 'bar',
             data: {
-                labels: ['Baptis', 'Komuni Pertama', 'Krisma', 'Perkawinan'],
+                labels: ['Sudah Dibaptis', 'Komuni Pertama', 'Sakramen Krisma', 'Sakramen Perkawinan'],
                 datasets: [{
                     label: 'Penerima Sakramen',
                     data: [
@@ -833,7 +846,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- 4. MARRIAGE PIE CHART ---
+    // --- 4. MARRIAGE DOUGHNUT CHART ---
     const ctxMarriage = document.getElementById('marriagePieChart');
     if (ctxMarriage) {
         const marrLabels = {!! json_encode(array_column($statusKawinStats, 'label')) !!};
@@ -841,26 +854,29 @@ document.addEventListener('DOMContentLoaded', function() {
         const marrColors = {!! json_encode(array_column($statusKawinStats, 'color')) !!};
 
         new Chart(ctxMarriage, {
-            type: 'pie',
+            type: 'doughnut',
             data: {
                 labels: marrLabels,
                 datasets: [{
                     data: marrCounts,
                     backgroundColor: marrColors,
                     borderWidth: 3,
-                    borderColor: '#ffffff'
+                    borderColor: '#ffffff',
+                    hoverOffset: 6
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                cutout: '66%',
                 plugins: {
                     legend: {
                         position: 'bottom',
                         labels: {
                             font: { family: 'Inter', size: 11, weight: '600' },
-                            padding: 14,
-                            usePointStyle: true
+                            padding: 12,
+                            usePointStyle: true,
+                            boxWidth: 8
                         }
                     }
                 }

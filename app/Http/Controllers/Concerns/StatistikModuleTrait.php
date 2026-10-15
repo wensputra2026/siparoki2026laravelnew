@@ -134,8 +134,8 @@ trait StatistikModuleTrait
         $usiaStats = [
             ['label' => 'Anak-anak & Remaja Awal', 'range' => '0 - 12 Tahun', 'count' => $anak, 'percentage' => round(($anak / max(1, $totalUmat)) * 100), 'icon' => 'fa-solid fa-child', 'color' => 'bg-emerald-500'],
             ['label' => 'Orang Muda Katolik (OMK)', 'range' => '13 - 25 Tahun', 'count' => $omk, 'percentage' => round(($omk / max(1, $totalUmat)) * 100), 'icon' => 'fa-solid fa-graduation-cap', 'color' => 'bg-sky-500'],
-            ['label' => 'Dewasa Produktif', 'range' => '26 - 59 Tahun', 'count' => $dewasa, 'percentage' => round(($dewasa / max(1, $totalUmat)) * 100), 'icon' => 'fa-solid fa-person-walking', 'color' => 'bg-amber-500'],
-            ['label' => 'Lansia (Senior)', 'range' => '60+ Tahun', 'count' => $lansia, 'percentage' => round(($lansia / max(1, $totalUmat)) * 100), 'icon' => 'fa-solid fa-person-cane', 'color' => 'bg-purple-500'],
+            ['label' => 'Dewasa', 'range' => '26 - 59 Tahun', 'count' => $dewasa, 'percentage' => round(($dewasa / max(1, $totalUmat)) * 100), 'icon' => 'fa-solid fa-person-walking', 'color' => 'bg-amber-500'],
+            ['label' => 'Lansia', 'range' => '60+ Tahun', 'count' => $lansia, 'percentage' => round(($lansia / max(1, $totalUmat)) * 100), 'icon' => 'fa-solid fa-person-cane', 'color' => 'bg-purple-500'],
         ];
 
         // Sakramen
@@ -232,11 +232,7 @@ trait StatistikModuleTrait
             ->with(['kk', 'kub', 'wilayah', 'kapela'])
             ->whereNotNull('status_panggilan')
             ->where('status_panggilan', '!=', '')
-            ->where('status_panggilan', '!=', 'Awam')
-            ->where(function ($q) {
-                $q->where('nama_lengkap', 'not like', '%PETRONELA NAREK%')
-                  ->orWhereNull('nama_lengkap');
-            });
+            ->where('status_panggilan', '!=', 'Awam');
 
         $panggilanList = $panggilanQuery->get()->map(function ($u) {
             $sp = strtolower($u->status_panggilan ?? '');
@@ -418,8 +414,8 @@ trait StatistikModuleTrait
             // 3. Kelompok Usia
             ['Kelompok Usia', 'Anak-anak & Remaja Awal (0 - 12 Thn)', $anak, round(($anak / max(1, $totalUmat)) * 100) . '%', 'Bina Iman Anak (SEKAMI / BIR)'],
             ['Kelompok Usia', 'Orang Muda Katolik / OMK (13 - 25 Thn)', $omk, round(($omk / max(1, $totalUmat)) * 100) . '%', 'Generasi Muda & Pelajar/Mahasiswa'],
-            ['Kelompok Usia', 'Dewasa Produktif (26 - 59 Thn)', $dewasa, round(($dewasa / max(1, $totalUmat)) * 100) . '%', 'Pilar Keluarga & Pengurus Pastoral'],
-            ['Kelompok Usia', 'Lansia / Senior (60+ Thn)', $lansia, round(($lansia / max(1, $totalUmat)) * 100) . '%', 'Pelayanan Pastoral Lansia'],
+            ['Kelompok Usia', 'Dewasa (26 - 59 Thn)', $dewasa, round(($dewasa / max(1, $totalUmat)) * 100) . '%', 'Pilar Keluarga & Pengurus Pastoral'],
+            ['Kelompok Usia', 'Lansia (60+ Thn)', $lansia, round(($lansia / max(1, $totalUmat)) * 100) . '%', 'Pelayanan Pastoral Lansia'],
 
             // 4. Penerimaan Sakramen
             ['Penerimaan Sakramen', 'Sakramen Baptis', $totalUmat, '100%', 'Tercatat di Buku Baptis'],

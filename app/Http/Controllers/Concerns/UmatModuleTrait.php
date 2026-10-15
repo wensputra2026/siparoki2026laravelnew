@@ -208,10 +208,10 @@ trait UmatModuleTrait
         $dewasa = (int) round($totalUmat * 0.38);
         $lansia = max(0, $totalUmat - ($anak + $omk + $dewasa));
         $usiaStats = [
-            ['label' => 'Anak-anak (0-12 Thn)', 'count' => $anak, 'percent' => round(($anak / max(1, $totalUmat)) * 100), 'color' => 'bg-emerald-500', 'textColor' => 'text-emerald-600', 'icon' => 'fa-child'],
-            ['label' => 'OMK / Pemuda (13-25 Thn)', 'count' => $omk, 'percent' => round(($omk / max(1, $totalUmat)) * 100), 'color' => 'bg-sky-500', 'textColor' => 'text-sky-600', 'icon' => 'fa-graduation-cap'],
-            ['label' => 'Dewasa Produktif (26-59 Thn)', 'count' => $dewasa, 'percent' => round(($dewasa / max(1, $totalUmat)) * 100), 'color' => 'bg-amber-500', 'textColor' => 'text-amber-600', 'icon' => 'fa-person-walking'],
-            ['label' => 'Lansia Senior (60+ Thn)', 'count' => $lansia, 'percent' => round(($lansia / max(1, $totalUmat)) * 100), 'color' => 'bg-purple-500', 'textColor' => 'text-purple-600', 'icon' => 'fa-person-cane'],
+            ['label' => 'Anak-anak', 'range' => '0-12 Thn', 'count' => $anak, 'percent' => round(($anak / max(1, $totalUmat)) * 100), 'color' => 'bg-emerald-500', 'textColor' => 'text-emerald-600', 'icon' => 'fa-child'],
+            ['label' => 'Orang Muda (OMK)', 'range' => '13-25 Thn', 'count' => $omk, 'percent' => round(($omk / max(1, $totalUmat)) * 100), 'color' => 'bg-sky-500', 'textColor' => 'text-sky-600', 'icon' => 'fa-graduation-cap'],
+            ['label' => 'Dewasa', 'range' => '26-59 Thn', 'count' => $dewasa, 'percent' => round(($dewasa / max(1, $totalUmat)) * 100), 'color' => 'bg-amber-500', 'textColor' => 'text-amber-600', 'icon' => 'fa-person-walking'],
+            ['label' => 'Lansia', 'range' => '60+ Thn', 'count' => $lansia, 'percent' => round(($lansia / max(1, $totalUmat)) * 100), 'color' => 'bg-purple-500', 'textColor' => 'text-purple-600', 'icon' => 'fa-person-cane'],
         ];
 
         // Sebaran Teritori (KUB / Wilayah)
