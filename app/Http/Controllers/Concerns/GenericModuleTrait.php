@@ -107,7 +107,11 @@ trait GenericModuleTrait
             $query->with([
                 'paroki:id_paroki,nama_paroki',
                 'kubs:id,kapela_id,nama_kub',
-                'wilayahs:id,kapela_id,nama_wilayah'
+                'wilayahs:id,kapela_id,nama_wilayah',
+                'provinsi:id_provinsi,nama_provinsi',
+                'kabupaten:id_kabupaten,nama_kabupaten',
+                'kecamatan:id_kecamatan,nama_kecamatan',
+                'desa:id_desa,nama_desa',
             ]);
         } elseif ($slug === 'wilayah') {
             $query->with([
@@ -511,7 +515,8 @@ trait GenericModuleTrait
         $needsDekenatReferences = in_array($slug, ['dekenat', 'kevikepan', 'paroki', 'kuasi-paroki'], true);
         $needsProvinsiReferences = in_array($slug, ['keuskupan', 'paroki', 'kuasi-paroki', 'kapela', 'stasi', 'wilayah', 'kub', 'kabupaten', 'kecamatan', 'desa-kelurahan'], true);
         $needsKabupatenReferences = in_array($slug, ['keuskupan', 'paroki', 'kuasi-paroki', 'kapela', 'stasi', 'wilayah', 'kub', 'kecamatan', 'desa-kelurahan'], true);
-        $needsKecamatanReferences = in_array($slug, ['paroki', 'kuasi-paroki', 'kapela', 'stasi', 'wilayah', 'kub', 'desa-kelurahan'], true);
+        $needsKecamatanReferences = in_array($slug, ['keuskupan', 'paroki', 'kuasi-paroki', 'kapela', 'stasi', 'wilayah', 'kub', 'desa-kelurahan'], true);
+        $needsDesaReferences = in_array($slug, ['keuskupan', 'paroki', 'kuasi-paroki', 'kapela', 'stasi', 'wilayah', 'kub', 'desa-kelurahan'], true);
         $needsParokiReferences = in_array($slug, ['dekenat', 'kevikepan', 'paroki', 'kuasi-paroki', 'kapela', 'stasi', 'wilayah', 'kub', 'user'], true);
         $needsPastors = in_array($slug, ['paroki', 'kuasi-paroki', 'dekenat', 'kevikepan', 'master-pastor', 'riwayat-pastor', 'sakramen', 'pengajuan-sakramen']);
         $needsUmatReferences = in_array($slug, ['pengajuan-sakramen', 'sakramen', 'iuran', 'umat', 'data-umat', 'riwayat-mutasi-umat', 'riwayat-mutasi', 'mutasi-umat', 'mutasi_umat'], true);
@@ -543,7 +548,7 @@ trait GenericModuleTrait
 
         $kecamatanList = [];
         if ($needsKecamatanReferences) {
-            $kecamatanList = \Illuminate\Support\Facades\Cache::remember('ref_kecamatan_list_ntt_v1', 3600, function() {
+            $kecamatanList = \Illuminate\Support\Facades\Cache::remember('ref_kecamatan_list_ntt_v2', 3600, function() {
                 $nttKecIds = \App\Models\Kecamatan::whereHas('kabupaten.provinsi', function($q) {
                     $q->where('nama_provinsi', 'like', '%Nusa Tenggara Timur%')
                       ->orWhere('nama_provinsi', 'like', '%NTT%');
@@ -552,9 +557,20 @@ trait GenericModuleTrait
                 if ($nttKecIds->isNotEmpty()) {
                     return \App\Models\Kecamatan::whereIn('id_kecamatan', $nttKecIds)
                         ->orderBy('nama_kecamatan')
-                        ->get(['id_kecamatan', 'kabupaten_id', 'nama_kecamatan']);
+                        ->get(['id_kecamatan', 'kabupaten_id', 'nama_kecamatan'])
+                        ->map(function ($k) {
+                            $k->id = $k->id_kecamatan;
+                            $k->name = $k->nama_kecamatan;
+                            return $k;
+                        });
                 }
-                return \App\Models\Kecamatan::orderBy('nama_kecamatan')->get(['id_kecamatan', 'kabupaten_id', 'nama_kecamatan']);
+                return \App\Models\Kecamatan::orderBy('nama_kecamatan')
+                    ->get(['id_kecamatan', 'kabupaten_id', 'nama_kecamatan'])
+                    ->map(function ($k) {
+                        $k->id = $k->id_kecamatan;
+                        $k->name = $k->nama_kecamatan;
+                        return $k;
+                    });
             });
 
             if ($slug === 'desa-kelurahan' && $kabupatenFilter) {
@@ -565,17 +581,31 @@ trait GenericModuleTrait
         }
 
         $desaList = [];
-        if (in_array($slug, ['desa-kelurahan', 'paroki', 'wilayah', 'kub'], true)) {
-            $desaList = \Illuminate\Support\Facades\Cache::remember('ref_desa_list_ntt_v4', 3600, function() {
+        if ($needsDesaReferences) {
+            $desaList = \Illuminate\Support\Facades\Cache::remember('ref_desa_list_ntt_v5', 3600, function() {
                 $nttKecIds = \App\Models\Kecamatan::whereHas('kabupaten.provinsi', function($q) {
                     $q->where('nama_provinsi', 'like', '%Nusa Tenggara Timur%')
                       ->orWhere('nama_provinsi', 'like', '%NTT%');
                 })->pluck('id_kecamatan');
 
                 if ($nttKecIds->isNotEmpty()) {
-                    return \App\Models\DesaKelurahan::whereIn('kecamatan_id', $nttKecIds)->orderBy('nama_desa')->get(['id_desa', 'kecamatan_id', 'nama_desa']);
+                    return \App\Models\DesaKelurahan::whereIn('kecamatan_id', $nttKecIds)
+                        ->orderBy('nama_desa')
+                        ->get(['id_desa', 'kecamatan_id', 'nama_desa'])
+                        ->map(function ($d) {
+                            $d->id = $d->id_desa;
+                            $d->name = $d->nama_desa;
+                            return $d;
+                        });
                 }
-                return \App\Models\DesaKelurahan::take(500)->orderBy('nama_desa')->get(['id_desa', 'kecamatan_id', 'nama_desa']);
+                return \App\Models\DesaKelurahan::take(500)
+                    ->orderBy('nama_desa')
+                    ->get(['id_desa', 'kecamatan_id', 'nama_desa'])
+                    ->map(function ($d) {
+                        $d->id = $d->id_desa;
+                        $d->name = $d->nama_desa;
+                        return $d;
+                    });
             });
         }
 
