@@ -27,23 +27,56 @@
         }
     }
 
-    $wilayahParts = array_filter([
-        $kapela->nama_desa ?? null,
-        $kapela->nama_kecamatan ?? null,
-        $kapela->nama_kabupaten ?? null,
-        $kapela->nama_provinsi ?? null
-    ]);
-    $wilayahStr = !empty($wilayahParts) ? implode(', ', $wilayahParts) : null;
-
-    $mapsUrl = $kapela->maps_url ?? null;
-    if (!$mapsUrl && !empty($kapela->latitude) && !empty($kapela->longitude)) {
-        $mapsUrl = 'https://www.google.com/maps?q=' . $kapela->latitude . ',' . $kapela->longitude;
+    // Smart Territory Fallback (ensure no blank "-" in badges and table)
+    $desa = $kapela->nama_desa ?? null;
+    if (empty($desa) || $desa === '-') {
+        if (!empty($kapela->lokasi) && $kapela->lokasi !== '-') {
+            $desa = $kapela->lokasi;
+        } elseif (preg_match('/[-–—]\s*([A-Za-z\s]+)$/', $nama, $mLoc)) {
+            $desa = 'Desa ' . trim($mLoc[1]);
+        } else {
+            $desa = 'Wilayah Paroki Benlutu';
+        }
     }
 
-    // Resolve narrative history & notes from keterangan or DB
+    $kecamatan = !empty($kapela->nama_kecamatan) && $kapela->nama_kecamatan !== '-' 
+        ? $kapela->nama_kecamatan 
+        : 'Batu Putih';
+
+    $kabupaten = !empty($kapela->nama_kabupaten) && $kapela->nama_kabupaten !== '-' 
+        ? $kapela->nama_kabupaten 
+        : 'Timor Tengah Selatan';
+
+    $provinsi = !empty($kapela->nama_provinsi) && $kapela->nama_provinsi !== '-' 
+        ? $kapela->nama_provinsi 
+        : 'Nusa Tenggara Timur';
+
+    $wilayahParts = array_filter([$desa, $kecamatan, $kabupaten, $provinsi]);
+    $wilayahStr = implode(', ', $wilayahParts);
+
+    // Maps & Coordinates Resolver
     $rawKeterangan = $kapela->keterangan ?? '';
     $resolvedSejarah = !empty($kapela->sejarah) ? trim($kapela->sejarah) : '';
     $extraCatatan = '';
+    $mapsEmbedUrl = null;
+    $mapsDirectUrl = null;
+
+    // Check if kapela table already has maps_url
+    if (!empty($kapela->maps_url)) {
+        if (str_contains($kapela->maps_url, 'google.com/maps/embed')) {
+            $mapsEmbedUrl = $kapela->maps_url;
+        } else {
+            $mapsDirectUrl = $kapela->maps_url;
+        }
+    }
+
+    // Check latitude/longitude columns
+    if (!empty($kapela->latitude) && !empty($kapela->longitude)) {
+        $lat = $kapela->latitude;
+        $lng = $kapela->longitude;
+        $mapsDirectUrl = $mapsDirectUrl ?: "https://www.google.com/maps?q={$lat},{$lng}";
+        $mapsEmbedUrl = $mapsEmbedUrl ?: "https://maps.google.com/maps?q={$lat},{$lng}&hl=id&z=15&output=embed";
+    }
 
     if (empty($resolvedSejarah) && !empty($rawKeterangan)) {
         // If "Sejarah:" exists, parse prefix metadata and history body
@@ -54,30 +87,64 @@
             $prefix = $rawKeterangan;
         }
 
-        // Parse key-value metadata from prefix (e.g. Pelindung, Tipe lama, Koordinat, Maps)
-        if (preg_match_all('/(Pelindung|Tipe\s*lama|Koordinat|Maps)\s*:\s*([^:]+?)(?=(?:Pelindung|Tipe\s*lama|Koordinat|Maps)\s*:|$)/is', $prefix, $mMeta, PREG_SET_ORDER)) {
-            foreach ($mMeta as $match) {
-                $mKey = strtolower(str_replace(' ', '_', trim($match[1])));
-                $mVal = trim($match[2]);
-                if ($mKey === 'pelindung' && (empty($pelindung) || $pelindung === '-') && $mVal !== '-' && !empty($mVal)) {
-                    $pelindung = $mVal;
-                }
-                if ($mKey === 'maps' && empty($mapsUrl) && !empty($mVal)) {
-                    if (preg_match('/src=["\']([^"\']+)["\']/i', $mVal, $mSrc)) {
-                        $mapsUrl = $mSrc[1];
-                    } elseif (str_starts_with($mVal, 'http')) {
-                        $mapsUrl = $mVal;
-                    }
+        // 1. Extract Pelindung from prefix if not set
+        if (preg_match('/Pelindung\s*:\s*([^;\r\n]+)/i', $prefix, $mPel)) {
+            $val = trim($mPel[1]);
+            if ((empty($pelindung) || $pelindung === '-') && !empty($val) && $val !== '-') {
+                $pelindung = $val;
+            }
+        }
+
+        // 2. Extract Maps iframe or direct URL from rawKeterangan
+        if (preg_match('/Maps\s*:\s*(<iframe[^>]+>|https?:\/\/[^\s\r\n"\'>]+|<iframe\s+src=["\']([^"\']+)["\']?)/is', $rawKeterangan, $mMapsAll)) {
+            $matchedMaps = trim($mMapsAll[0]);
+            if (preg_match('/src=["\']([^"\']+)["\']?/i', $matchedMaps, $mSrc)) {
+                $mapsEmbedUrl = rtrim($mSrc[1], '"\'>');
+            } elseif (preg_match('/(https?:\/\/[^\s\r\n"\'>]+)/i', $matchedMaps, $mHttp)) {
+                $extracted = rtrim($mHttp[1], '"\'>');
+                if (str_contains($extracted, 'google.com/maps/embed')) {
+                    $mapsEmbedUrl = $extracted;
+                } else {
+                    $mapsDirectUrl = $extracted;
                 }
             }
-            $remainingNote = preg_replace('/(Pelindung|Tipe\s*lama|Koordinat|Maps)\s*:\s*([^:]+?)(?=(?:Pelindung|Tipe\s*lama|Koordinat|Maps)\s*:|$)/is', '', $prefix);
-            $extraCatatan = trim($remainingNote);
-        } else {
-            $extraCatatan = trim($prefix);
         }
+
+        // 3. Extract Coordinates if present
+        if (preg_match('/Koordinat\s*:\s*(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/i', $rawKeterangan, $mCoord)) {
+            $cLat = $mCoord[1];
+            $cLng = $mCoord[2];
+            $mapsDirectUrl = $mapsDirectUrl ?: "https://www.google.com/maps?q={$cLat},{$cLng}";
+            $mapsEmbedUrl = $mapsEmbedUrl ?: "https://maps.google.com/maps?q={$cLat},{$cLng}&hl=id&z=15&output=embed";
+        }
+
+        // 4. Strip technical metadata from prefix so it NEVER leaks into "Informasi Tambahan"
+        $cleanedPrefix = preg_replace('/Pelindung\s*:\s*[^\r\n]+/i', '', $prefix);
+        $cleanedPrefix = preg_replace('/Tipe\s*lama\s*:\s*[^\r\n]+/i', '', $cleanedPrefix);
+        $cleanedPrefix = preg_replace('/Koordinat\s*:\s*[^\r\n]+/i', '', $cleanedPrefix);
+        $cleanedPrefix = preg_replace('/Maps\s*:\s*.*?(?=(?:\r?\n\s*\r?\n)|Sejarah\s*:|$)/is', '', $cleanedPrefix);
+        $cleanedPrefix = preg_replace('/<iframe[^>]*>.*?<\/iframe>/is', '', $cleanedPrefix);
+        $cleanedPrefix = preg_replace('/<iframe[^>]*$/is', '', $cleanedPrefix);
+        $cleanedPrefix = trim(preg_replace('/^\s*[\r\n]+/m', '', $cleanedPrefix));
+        $extraCatatan = $cleanedPrefix;
     } elseif (!empty($rawKeterangan)) {
-        $extraCatatan = trim($rawKeterangan);
+        // Strip if rawKeterangan has raw maps code
+        $cleanRaw = preg_replace('/Maps\s*:\s*.*?(?=(?:\r?\n\s*\r?\n)|$)/is', '', $rawKeterangan);
+        $cleanRaw = preg_replace('/<iframe[^>]*>.*?<\/iframe>/is', '', $cleanRaw);
+        $cleanRaw = preg_replace('/<iframe[^>]*$/is', '', $cleanRaw);
+        $extraCatatan = trim($cleanRaw);
     }
+
+    // Final safety clean for extraCatatan so no technical key leaks
+    $extraCatatan = trim(preg_replace('/Maps\s*:.*$/is', '', $extraCatatan));
+    $extraCatatan = trim(preg_replace('/<iframe.*$/is', '', $extraCatatan));
+    $extraCatatan = trim(preg_replace('/Koordinat\s*:\s*-\s*,\s*-/i', '', $extraCatatan));
+
+    // Default direct URL fallback if we have embed URL but no direct URL
+    if (empty($mapsDirectUrl) && !empty($mapsEmbedUrl)) {
+        $mapsDirectUrl = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($nama . ' Benlutu');
+    }
+    $mapsUrl = $mapsDirectUrl ?: $mapsEmbedUrl;
 
     // Auto-detect patron saint from kapela name if still blank or '-'
     if (empty($pelindung) || $pelindung === '-') {
@@ -89,13 +156,19 @@
     $backRoute = '/profil-kapela';
     $backLabel = 'Kembali ke Daftar Stasi & Kapela';
 
-    // Editorial narrative article formatter
+    // Editorial narrative article formatter with high typographic polish
     $formatSejarah = function($rawText) {
         if (empty($rawText)) return '';
 
-        // Strip repeated scan header artifacts
-        $clean = preg_replace('/\n+\s*Profil Kapela\s*\n+/i', "\n\n", $rawText);
-        $clean = str_replace(["\r\n", "\r"], "\n", $clean);
+        $clean = str_replace(["\r\n", "\r"], "\n", $rawText);
+
+        // Fix words spliced by page breaks & book headers (e.g. calonParoki ... calon katolik)
+        $clean = preg_replace('/calon\s*Paroki\s+Santo\s+Vinsensius[^\n]*\d*\s*Profil\s*Kapela\s*calon/is', 'calon-calon', $clean);
+        $clean = preg_replace('/\n*\s*Paroki\s+Santo\s+Vinsensius\s+a\s+Paulo\s+Benlutu\s+\d+\s*\n*/i', "\n\n", $clean);
+        $clean = preg_replace('/\n*\s*Profil\s+Kapela\s*\n*/i', "\n\n", $clean);
+
+        // Rejoin sentences broken by accidental double newlines (e.g. "Keluarga kamu, semua \n\n protestan.")
+        $clean = preg_replace('/([a-z0-9\,])\n{2,}\s*([a-z])/u', '$1 $2', $clean);
 
         // Split paragraphs by 2 or more newlines
         $blocks = preg_split('/\n{2,}/', trim($clean));
@@ -115,9 +188,31 @@
             if (preg_match('/^(\d{1,2}-\d{1,2}-\d{4})\s*:\s*(.*)/s', $block, $m)) {
                 $date = $m[1];
                 $content = trim(preg_replace('/\s*\n\s*/', ' ', $m[2]));
-                $html .= '<div class="kronik-entry p-3 my-3 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid var(--primary-teal, #00897b); padding: 16px 20px; border-radius: 10px; margin: 18px 0; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">';
-                $html .= '<span class="badge mb-2 font-monospace px-2.5 py-1" style="background: #004d40; color: #ffffff; font-size: 0.8rem; border-radius: 6px;"><i class="far fa-calendar-alt me-1"></i> ' . e($date) . '</span>';
+                $html .= '<div class="kronik-entry p-3 my-3 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid var(--primary-teal, #00897b); padding: 16px 20px; border-radius: 12px; margin: 18px 0; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">';
+                $html .= '<span class="badge mb-2 px-3 py-1.5" style="background: #004d40; color: #ffffff; font-size: 0.8rem; border-radius: 8px;"><i class="far fa-calendar-alt me-1"></i> ' . e($date) . '</span>';
                 $html .= '<p class="mb-0 leading-relaxed" style="font-size: 0.95rem; line-height: 1.8; color: #334155; text-align: justify;">' . e($content) . '</p>';
+                $html .= '</div>';
+                continue;
+            }
+
+            // Official Historical Letter / Archive Document (e.g. SALINAN ... Surat No.5 ...)
+            if (preg_match('/^SALINAN/i', $block) || preg_match('/Surat\s+No\.\s*\d+/i', $block)) {
+                $html .= '<div class="document-box my-3 p-3 rounded-3" style="background: #fefce8; border: 1px solid #fef08a; border-left: 4px solid #ca8a04; padding: 18px 22px; border-radius: 12px; margin: 18px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.9rem; line-height: 1.7; color: #713f12;">';
+                $html .= '<div style="font-weight: 700; text-transform: uppercase; margin-bottom: 8px; color: #a16207; display: flex; align-items: center; gap: 6px;"><i class="fas fa-file-lines"></i> Dokumen Arsip Sejarah</div>';
+                $html .= nl2br(e($block));
+                $html .= '</div>';
+                continue;
+            }
+
+            // Quotes / Testimony with quotation marks (e.g. “Pada tahun 1952...”, “Kami berkenalan...”)
+            $trimmedBlock = trim($block);
+            if (preg_match('/^[“"\'«]/us', $trimmedBlock) || (preg_match('/“([^”]{30,})”/us', $trimmedBlock) && strlen($trimmedBlock) < 900)) {
+                $flowText = preg_replace('/\s*\n\s*/', ' ', $trimmedBlock);
+                $html .= '<div class="historical-quote my-3 p-3 rounded-3" style="background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid #f59e0b; padding: 16px 22px; border-radius: 12px; margin: 18px 0; box-shadow: 0 2px 8px rgba(245,158,11,0.05);">';
+                $html .= '<div style="display: flex; gap: 12px;">';
+                $html .= '<i class="fa-solid fa-quote-left text-amber-500" style="font-size: 1.25rem; flex-shrink: 0; margin-top: 3px;"></i>';
+                $html .= '<p class="mb-0" style="font-style: italic; color: #78350f; font-size: 0.96rem; line-height: 1.85; text-align: justify;">' . e($flowText) . '</p>';
+                $html .= '</div>';
                 $html .= '</div>';
                 continue;
             }
@@ -131,10 +226,16 @@
             // Smooth flow across single-line manual breaks
             $flowText = preg_replace('/\s*\n\s*/', ' ', $block);
 
+            // Enhance quotes inside paragraphs
+            $formatQuote = function($text) {
+                $escaped = e($text);
+                return preg_replace('/(?:“|&ldquo;|&quot;|")([^”"&]{25,})(?:”|&rdquo;|&quot;|")/us', '<span class="d-block my-3 p-3 rounded-3 fst-italic" style="background: #fffbeb; border-left: 4px solid #f59e0b; color: #78350f; box-shadow: 0 1px 4px rgba(245,158,11,0.06); line-height: 1.85;"><i class="fa-solid fa-quote-left me-1 text-warning"></i> “$1” <i class="fa-solid fa-quote-right ms-1 text-warning"></i></span>', $escaped);
+            };
+
             if ($idx === 0) {
-                $html .= '<p class="article-lead" style="font-size: 1.05rem; line-height: 1.9; color: #1e293b; margin-bottom: 1.35rem; text-align: justify; font-weight: 500;">' . e($flowText) . '</p>';
+                $html .= '<p class="article-lead" style="font-size: 1.05rem; line-height: 1.9; color: #1e293b; margin-bottom: 1.35rem; text-align: justify; font-weight: 500;">' . $formatQuote($flowText) . '</p>';
             } else {
-                $html .= '<p class="article-p" style="font-size: 0.98rem; line-height: 1.85; color: #334155; margin-bottom: 1.25rem; text-align: justify;">' . e($flowText) . '</p>';
+                $html .= '<p class="article-p" style="font-size: 0.98rem; line-height: 1.85; color: #334155; margin-bottom: 1.25rem; text-align: justify;">' . $formatQuote($flowText) . '</p>';
             }
         }
 
@@ -376,31 +477,50 @@
                                 <div class="col-6 col-md-3">
                                     <div style="background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0;">
                                         <span class="text-muted d-block small" style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700;">Desa / Kelurahan</span>
-                                        <strong>{{ $kapela->nama_desa ?? '-' }}</strong>
+                                        <strong>{{ $desa ?: '-' }}</strong>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-3">
                                     <div style="background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0;">
                                         <span class="text-muted d-block small" style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700;">Kecamatan</span>
-                                        <strong>{{ $kapela->nama_kecamatan ?? '-' }}</strong>
+                                        <strong>{{ $kecamatan ?: '-' }}</strong>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-3">
                                     <div style="background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0;">
                                         <span class="text-muted d-block small" style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700;">Kabupaten</span>
-                                        <strong>{{ $kapela->nama_kabupaten ?? '-' }}</strong>
+                                        <strong>{{ $kabupaten ?: '-' }}</strong>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-3">
                                     <div style="background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0;">
                                         <span class="text-muted d-block small" style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700;">Provinsi</span>
-                                        <strong>{{ $kapela->nama_provinsi ?? '-' }}</strong>
+                                        <strong>{{ $provinsi ?: '-' }}</strong>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Catatan Tambahan -->
+                        <!-- Peta Lokasi Google Maps Interaktif -->
+                        @if(!empty($mapsEmbedUrl))
+                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; margin-top: 22px; margin-bottom: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+                                <div style="padding: 12px 18px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                                    <span style="font-size: 0.82rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 7px;">
+                                        <i class="fas fa-map-location-dot" style="color: var(--primary-teal, #00897b);"></i> Peta Lokasi Stasi / Kapela
+                                    </span>
+                                    @if(!empty($mapsDirectUrl))
+                                        <a href="{{ $mapsDirectUrl }}" target="_blank" rel="noopener noreferrer" style="font-size: 0.78rem; font-weight: 700; color: var(--primary-teal, #00897b); text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+                                            <span>Buka di Google Maps</span> <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+                                        </a>
+                                    @endif
+                                </div>
+                                <div style="position: relative; width: 100%; height: 320px; background: #e2e8f0;">
+                                    <iframe src="{{ $mapsEmbedUrl }}" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                </div>
+                            </div>
+                        @endif
+
+                        <!-- Catatan Tambahan (Hanya tampil bila ada catatan substantif di luar metadata teknis) -->
                         @if(!empty($extraCatatan))
                             <div style="background: #f0fdfa; border: 1px solid #ccfbf1; border-radius: 12px; padding: 16px 20px; color: #134e4a; margin-top: 20px;">
                                 <span style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #0f766e; display: block; margin-bottom: 6px;">
@@ -446,8 +566,8 @@
                     <a href="{{ $backRoute }}" style="display: inline-flex; align-items: center; gap: 8px; background: #ffffff; border: 1px solid #cbd5e1; color: #334155; font-size: 0.88rem; font-weight: 700; padding: 10px 22px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
                         <i class="fas fa-arrow-left"></i> Kembali ke Daftar Stasi
                     </a>
-                    @if($mapsUrl)
-                        <a href="{{ $mapsUrl }}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; background: #0f172a; color: #ffffff; font-size: 0.88rem; font-weight: 700; padding: 10px 22px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    @if($mapsDirectUrl ?: $mapsUrl)
+                        <a href="{{ $mapsDirectUrl ?: $mapsUrl }}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; background: #0f172a; color: #ffffff; font-size: 0.88rem; font-weight: 700; padding: 10px 22px; border-radius: 25px; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                             <i class="fas fa-location-arrow" style="color: #14b8a6;"></i> Petunjuk Arah (Maps)
                         </a>
                     @endif
@@ -487,9 +607,9 @@
                         </li>
                     </ul>
 
-                    @if($mapsUrl)
+                    @if($mapsDirectUrl ?: $mapsUrl)
                         <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #f1f5f9;">
-                            <a href="{{ $mapsUrl }}" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--primary-teal, #00897b); color: #ffffff; font-weight: 700; font-size: 0.85rem; padding: 10px 16px; border-radius: 20px; text-decoration: none; box-shadow: 0 4px 12px rgba(0,137,123,0.25);">
+                            <a href="{{ $mapsDirectUrl ?: $mapsUrl }}" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--primary-teal, #00897b); color: #ffffff; font-weight: 700; font-size: 0.85rem; padding: 10px 16px; border-radius: 20px; text-decoration: none; box-shadow: 0 4px 12px rgba(0,137,123,0.25);">
                                 <i class="fas fa-location-arrow"></i> Petunjuk Arah (Google Maps)
                             </a>
                         </div>
